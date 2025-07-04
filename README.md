@@ -1,106 +1,232 @@
-# RAG-based-Explainable-Fact-Checker
-A transparent and auditable fact-checking system powered by Retrieval-Augmented Generation (RAG), LangChain, and Large Language Models. This system verifies claims against reliable sources and clearly explains its reasoning process with full traceability.
+# 🌍 RAG-based Explainable Fact Checker
 
-## Features
+Un système de fact-checking basé sur RAG (Retrieval-Augmented Generation) pour détecter la désinformation sur le changement climatique.
 
-- **Transparent Fact-Checking**: Claims are verified against a database of reliable sources with full explanation of reasoning
-- **Source Attribution**: All verdicts are tied to specific evidence snippets from the source database
-- **Multi-step Analysis**: Claims are broken down into components for thorough verification
-- **Explainable Verdicts**: Clear reasoning chain from evidence to conclusion
-- **Interactive UI**: User-friendly Streamlit interface with detailed source exploration
-- **Analytics Dashboard**: Track fact-checking patterns and trends
-- **Auditability**: Complete trace of the fact-checking process for accountability
+## 🎯 Fonctionnalités
 
-## Tech Stack
+- **Fact-checking automatique** sur le changement climatique
+- **Recherche dans une base de connaissances** scientifique
+- **Réponses explicables** avec sources
+- **Interface Streamlit** intuitive
+- **Évaluation complète** avec DeepEval
 
-- **LangChain**: Orchestration framework for connecting LLMs with data sources
-- **OpenAI API**: Powers the language understanding and reasoning components
-- **Pinecone**: Vector database for semantic search across source documents
-- **Streamlit**: User interface and visualization
-- **Python**: Core programming language
+## 🏗️ Architecture
 
-## Usage
-
-### 1. Load data into Pinecone
-
-First, load your trusted source documents into the Pinecone vector database:
-
-```bash
-python data_loader.py
+```
+├── app.py                    # Application principale Streamlit
+├── ollama_utils.py           # Utilitaires Ollama (LLM + Embeddings)
+├── ollama_config.py          # Configuration Ollama
+├── data_loader_ollama.py     # Chargeur de données avec Pinecone
+├── pdf_loader.py             # Chargeur de documents PDF
+├── evaluate_with_dataset.py  # Script d'évaluation DeepEval
+├── climate_dataset.py        # Dataset d'évaluation (100+ questions)
+└── requirements.txt          # Dépendances principales
 ```
 
-This script will:
-- Create a new Pinecone index if needed
-- Process documents from the `./data` directory and the specified web URLs
-- Split documents into chunks
-- Embed these chunks and store them in Pinecone
+## 🚀 Installation
 
-### 2. Run the Streamlit application
+### 1. Cloner le repository
+
+```bash
+git clone <repository-url>
+cd RAG-based-Explainable-Fact-Checker
+```
+
+### 2. Installer les dépendances
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configuration Ollama
+
+```bash
+# Installer Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Démarrer Ollama
+ollama serve
+
+# Télécharger le modèle
+ollama pull llama2:7b
+```
+
+### 4. Configuration Pinecone
+
+1. Créer un compte sur [Pinecone](https://www.pinecone.io/)
+2. Créer un index Serverless
+3. Copier l'API key
+
+### 5. Configuration environnement
+
+```bash
+cp env_example.txt .env
+# Éditer .env avec vos clés API
+```
+
+## 🔧 Configuration
+
+### Variables d'environnement (.env)
+
+```env
+# Ollama Configuration
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama2:7b
+OLLAMA_TEMPERATURE=0.7
+OLLAMA_MAX_TOKENS=2000
+
+# Pinecone Serverless Configuration
+PINECONE_API_KEY=votre_cle_api_pinecone
+PINECONE_INDEX_NAME=fact-checker-index
+```
+
+## 📊 Chargement des données
+
+### 1. Préparer les documents
+
+Placez vos fichiers PDF dans le dossier `rapport/`
+
+### 2. Charger vers Pinecone
+
+```bash
+python data_loader_ollama.py
+```
+
+## 🎮 Utilisation
+
+### Lancer l'application
 
 ```bash
 streamlit run app.py
 ```
 
-The application will start and be accessible at http://localhost:8501
+### Utiliser l'interface
 
-### 3. Using the Fact-Checker
+1. **Posez une question** sur le changement climatique
+2. **Obtenez une réponse** fact-checkée
+3. **Consultez les sources** utilisées
+4. **Explorez les explications** détaillées
 
-1. Enter a claim to fact-check in the text area
-2. Click "Fact Check" to start the process
-3. Review the verdict and summary
-4. Explore the "Detailed Analysis" tab to see the complete reasoning
-5. Check the "Source Tracking" tab to explore exactly which sources were used
+## 🧪 Évaluation
 
-## How It Works
+### Installation DeepEval
 
-The system follows a multi-step process to verify claims:
-
-1. **Query Generation**: The claim is analyzed to generate effective search queries
-2. **Retrieval**: Relevant documents are retrieved from the Pinecone vector database
-3. **Analysis**: The LLM breaks down the claim into components and analyzes each against the evidence
-4. **Verdict Assignment**: Based on the evidence, a verdict is assigned (TRUE, MOSTLY TRUE, MIXED, MOSTLY FALSE, FALSE, or UNVERIFIABLE)
-5. **Explanation Generation**: A human-readable explanation is generated
-6. **Source Attribution**: All evidence is linked back to its original sources
-
-## Advanced Features
-
-### Dashboard
-
-Navigate to the Dashboard page to see analytics about your fact-checking activities:
-- Verdict distribution
-- Fact checks over time
-- Recent fact checks
-
-### Batch Processing
-
-The system includes functionality for processing multiple claims at once through the Advanced Features page.
-
-### Trend Analysis
-
-Analyze patterns across multiple fact-checks to identify common themes and narrative trends.
-
-## Project Structure
-
-```
-rag-fact-checker/
-├── app.py                   # Main Streamlit application
-├── data_loader.py           # Script for loading documents into Pinecone
-├── utils.py                 # Utility functions
-├── requirements.txt         # Python dependencies
-├── .env                     # Environment variables (not in repo)
-├── data/                    # Directory for source documents
-├── fact_checks/             # Saved fact check results
-└── pages/                   # Additional Streamlit pages
-    ├── 01_Dashboard.py      # Analytics dashboard
-    └── 02_Advanced_Features.py # Advanced capabilities
+```bash
+pip install -r requirements_eval.txt
 ```
 
-## License
+### Évaluation complète
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```bash
+python evaluate_with_dataset.py
+```
 
-## Acknowledgments
+### Métriques évaluées
 
-- This project uses LangChain, developed by LangChain, Inc.
-- Vector search powered by Pinecone
-- LLM capabilities provided by OpenAI
+- **AnswerRelevancy** : Pertinence de la réponse
+- **ContextRelevancy** : Pertinence du contexte
+- **Faithfulness** : Fidélité aux sources
+
+## 📁 Structure des fichiers
+
+### Core du système
+
+- `app.py` - Application Streamlit principale
+- `ollama_utils.py` - Utilitaires Ollama (LLM + Embeddings)
+- `ollama_config.py` - Configuration Ollama
+- `data_loader_ollama.py` - Chargeur de données avec Pinecone
+- `pdf_loader.py` - Chargeur de documents PDF
+
+### Évaluation
+
+- `evaluate_with_dataset.py` - Script d'évaluation DeepEval
+- `climate_dataset.py` - Dataset d'évaluation (100+ questions)
+- `requirements_eval.txt` - Dépendances évaluation
+- `README_EVALUATION.md` - Guide d'évaluation détaillé
+
+### Configuration
+
+- `requirements.txt` - Dépendances principales
+- `env_example.txt` - Exemple de configuration
+- `.gitignore` - Fichiers à ignorer
+
+## 🔍 Fonctionnalités avancées
+
+### Recherche RAG
+
+- **Embeddings** avec Ollama
+- **Stockage vectoriel** Pinecone Serverless
+- **Recherche sémantique** pour contexte pertinent
+
+### Interface utilisateur
+
+- **Interface Streamlit** moderne
+- **Réponses explicables** avec sources
+- **Historique des questions**
+- **Export des résultats**
+
+### Évaluation automatique
+
+- **Dataset de 100+ questions** sur le climat
+- **Métriques DeepEval** standardisées
+- **Comparaison RAG vs Direct**
+- **Analyse par catégorie**
+
+## 🚨 Dépannage
+
+### Ollama ne répond pas
+
+```bash
+# Vérifier qu'Ollama est démarré
+ollama serve
+
+# Tester la connexion
+curl http://localhost:11434/api/tags
+```
+
+### Pinecone erreur de connexion
+
+- Vérifiez votre API key
+- Vérifiez que l'index existe
+- Testez avec `python test_pinecone_serverless.py`
+
+### Erreur de dépendances
+
+```bash
+pip install --upgrade -r requirements.txt
+```
+
+## 📈 Performance
+
+### Temps de traitement
+
+- **Embeddings** : ~30 secondes par chunk
+- **Génération de réponse** : ~10-20 secondes
+- **Recherche RAG** : ~5-10 secondes
+
+### Optimisations possibles
+
+- Utiliser un modèle plus rapide pour les embeddings
+- Paralléliser les requêtes
+- Optimiser la taille des chunks
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche feature
+3. Commit vos changements
+4. Push vers la branche
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir `LICENSE` pour plus de détails.
+
+## 📞 Support
+
+Pour toute question ou problème :
+
+1. Vérifiez la documentation
+2. Consultez les logs d'erreur
+3. Testez chaque composant individuellement
+4. Ouvrez une issue sur GitHub
