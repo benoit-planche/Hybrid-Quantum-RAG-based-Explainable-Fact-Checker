@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+system/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -63,3 +64,8 @@ tmp/
 *.json
 data/
 rapport/
+
+# ChromaDB files
+system/chroma_db/
+*.bin
+*.sqlite3

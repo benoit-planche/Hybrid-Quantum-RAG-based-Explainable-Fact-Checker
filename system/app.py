@@ -1,6 +1,5 @@
 import os
 import streamlit as st
-import pinecone
 import requests
 import json
 import uuid
@@ -10,6 +9,7 @@ import re
 from ollama_config import config
 from ollama_utils import OllamaClient, OllamaEmbeddings, format_prompt, extract_verdict
 from dotenv import load_dotenv
+from chromadb_manager import ChromaDBManager
 
 # Streamlit page configuration - MUST be first!
 st.set_page_config(
@@ -21,51 +21,26 @@ st.set_page_config(
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize environment variables
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "fact-checker-index")
-
-# Check if Pinecone credentials are available
-if not PINECONE_API_KEY:
-    st.warning("""
-    ⚠️ Configuration Pinecone manquante !
-    
-    Veuillez créer un fichier `.env` avec les informations suivantes :
-    
-    ```
-    PINECONE_API_KEY=votre_cle_api_pinecone
-    PINECONE_INDEX_NAME=fact-checker-index
-    ```
-    
-    L'application fonctionnera avec des documents simulés.
-    """)
-    # Initialize Pinecone with None values (will use fallback)
-    PINECONE_API_KEY = None
-
-# Initialize Pinecone only if credentials are available
-if PINECONE_API_KEY:
-    try:
-        # New Pinecone API - no environment needed
-        pinecone.init(api_key=PINECONE_API_KEY)
-        st.success("✅ Connexion Pinecone établie")
-    except Exception as e:
-        st.error(f"❌ Erreur de connexion Pinecone: {e}")
-        st.info("L'application fonctionnera avec des documents simulés")
-else:
-    st.info("🔧 Mode sans Pinecone - utilisation de documents simulés")
-
 # Initialize Ollama client
 ollama_client = OllamaClient()
 
-# Create embeddings and vector store (using Ollama if available, otherwise fallback)
+# Initialize ChromaDB
 try:
-    embeddings = OllamaEmbeddings()
-    # Note: For now, we'll use a simple approach without Pinecone vector store
-    # since Ollama embeddings might not be compatible with Pinecone
-    vectorstore = None
+    chroma_manager = ChromaDBManager(
+        persist_directory="./chroma_db",
+        embedding_model="llama2:7b"  # Modèle explicite
+    )
+    st.success("✅ ChromaDB initialisé avec succès")
+    
+    # Afficher les informations de la collection
+    collection_info = chroma_manager.get_collection_info()
+    if collection_info:
+        st.info(f"📊 Collection: {collection_info.get('document_count', 0)} documents indexés")
+        st.info(f"🤖 Modèle d'embedding: {chroma_manager.embedding_model}")
+    
 except Exception as e:
-    st.warning(f"Ollama embeddings not available: {e}")
-    vectorstore = None
+    st.error(f"❌ Erreur d'initialisation ChromaDB: {e}")
+    chroma_manager = None
 
 # Define prompts as templates
 retrieval_prompt_template = """I need to fact check the following claim:
@@ -133,7 +108,7 @@ def generate_search_queries(claim):
     return result
 
 def retrieve_documents(claim):
-    """Retrieve relevant documents from vector store or use fallback approach."""
+    """Retrieve relevant documents from ChromaDB."""
     # First generate search queries
     queries_text = generate_search_queries(claim)
     
@@ -152,30 +127,27 @@ def retrieve_documents(claim):
     all_docs = []
     doc_sources = {}
     
-    # For now, we'll use a simple approach without vector store
-    # In a real implementation, you would use the vector store here
-    if vectorstore:
-        # Retrieve documents for each query
+    if chroma_manager:
+        # Retrieve documents for each query using ChromaDB
         for query in queries[:3]:  # Limit to first 3 queries to control costs
-            docs = vectorstore.similarity_search(query, k=3)
+            docs = chroma_manager.search_documents(query, n_results=3)
             
             for doc in docs:
                 doc_id = str(uuid.uuid4())[:8]
-                doc_content = doc.page_content
-                doc_source = doc.metadata.get('source', 'Unknown')
+                doc_content = doc['content']
+                doc_source = doc['metadata'].get('source', 'Unknown')
                 
                 all_docs.append(f"[Document {doc_id}]\n{doc_content}\n")
                 doc_sources[doc_id] = {
                     'source': doc_source,
                     'content': doc_content,
-                    'query': query
+                    'query': query,
+                    'similarity': doc['similarity']
                 }
     else:
         # Fallback: create mock documents for demonstration
-        # In a real implementation, you would integrate with actual document sources
         for i, query in enumerate(queries[:3]):
             doc_id = str(uuid.uuid4())[:8]
-            # Create a mock document based on the query
             mock_content = f"This is a mock document related to: {query}. In a real implementation, this would contain actual factual information from reliable sources."
             
             all_docs.append(f"[Document {doc_id}]\n{mock_content}\n")
