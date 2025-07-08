@@ -135,7 +135,7 @@ class ChromaDBManager:
                     'content': results['documents'][0][i],
                     'metadata': results['metadatas'][0][i],
                     'distance': results['distances'][0][i],
-                    'similarity': 1 - results['distances'][0][i]  # Convertir distance en similarité
+                    'similarity': max(0, 1 - results['distances'][0][i])  # S'assurer que similarité >= 0
                 }
                 documents.append(doc)
             
