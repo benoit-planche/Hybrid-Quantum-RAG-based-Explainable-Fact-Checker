@@ -5,180 +5,180 @@ Dataset de fact-checking sur le changement climatique
 """
 
 CLIMATE_DATASET = [
-    # Consensus scientifique (10 questions)
+    # Scientific consensus (10 questions)
     {
-        "question": "Y a-t-il un consensus scientifique sur le changement climatique ?",
-        "expected_answer": "Oui, il existe un consensus scientifique écrasant (97%+) sur le fait que le changement climatique est causé par l'activité humaine.",
+        "question": "Is there a scientific consensus on climate change?",
+        "expected_answer": "Yes, there is an overwhelming scientific consensus (97%+) that climate change is caused by human activity.",
         "category": "consensus"
     },
     {
-        "question": "Quel pourcentage de scientifiques croient au changement climatique anthropique ?",
-        "expected_answer": "Plus de 97% des scientifiques du climat s'accordent sur le fait que le changement climatique est causé par l'activité humaine.",
+        "question": "What percentage of scientists believe in human-caused climate change?",
+        "expected_answer": "More than 97% of climate scientists agree that climate change is caused by human activity.",
         "category": "consensus"
     },
     {
-        "question": "Les scientifiques sont-ils divisés sur la question du changement climatique ?",
-        "expected_answer": "Non, il existe un consensus scientifique écrasant sur le changement climatique anthropique. Les divisions sont principalement dans les médias et la politique.",
+        "question": "Are scientists divided on the issue of climate change?",
+        "expected_answer": "No, there is an overwhelming scientific consensus on human-caused climate change. The divisions are mainly in media and politics.",
         "category": "consensus"
     },
-    
-    # Températures (15 questions)
+
+    # Temperatures (15 questions)
     {
-        "question": "Le réchauffement climatique s'est-il arrêté en 1998 ?",
-        "expected_answer": "Non, le réchauffement climatique n'a pas arrêté en 1998. Les données montrent une tendance au réchauffement continue depuis cette date.",
+        "question": "Did global warming stop in 1998?",
+        "expected_answer": "No, global warming did not stop in 1998. Data shows a continued warming trend since that date.",
         "category": "temperature"
     },
     {
-        "question": "Les températures ont-elles augmenté depuis le début du 20ème siècle ?",
-        "expected_answer": "Oui, les températures moyennes globales ont augmenté significativement depuis le début du 20ème siècle.",
+        "question": "Have temperatures increased since the early 20th century?",
+        "expected_answer": "Yes, global average temperatures have significantly increased since the early 20th century.",
         "category": "temperature"
     },
     {
-        "question": "Quelle est la tendance des températures globales depuis 1880 ?",
-        "expected_answer": "Les températures globales ont augmenté d'environ 1°C depuis 1880, avec une accélération depuis les années 1970.",
+        "question": "What is the trend in global temperatures since 1880?",
+        "expected_answer": "Global temperatures have increased by about 1°C since 1880, with an acceleration since the 1970s.",
         "category": "temperature"
     },
     {
-        "question": "Les températures actuelles sont-elles les plus élevées de l'histoire ?",
-        "expected_answer": "Les températures actuelles sont parmi les plus élevées des 2000 dernières années, dépassant même la période médiévale chaude.",
+        "question": "Are current temperatures the highest in history?",
+        "expected_answer": "Current temperatures are among the highest in the past 2000 years, surpassing even the Medieval Warm Period.",
         "category": "temperature"
     },
-    
-    # CO2 et gaz à effet de serre (15 questions)
+
+    # CO2 and greenhouse gases (15 questions)
     {
-        "question": "Quelle est la contribution du CO2 au réchauffement climatique ?",
-        "expected_answer": "Le CO2 est un gaz à effet de serre majeur qui contribue significativement au réchauffement climatique.",
+        "question": "What is CO2's contribution to global warming?",
+        "expected_answer": "CO2 is a major greenhouse gas that significantly contributes to global warming.",
         "category": "co2"
     },
     {
-        "question": "Le CO2 est-il un polluant ?",
-        "expected_answer": "Le CO2 n'est pas un polluant traditionnel mais un gaz à effet de serre qui contribue au réchauffement climatique.",
+        "question": "Is CO2 a pollutant?",
+        "expected_answer": "CO2 is not a traditional pollutant but is a greenhouse gas that contributes to global warming.",
         "category": "co2"
     },
     {
-        "question": "Les niveaux de CO2 ont-ils augmenté depuis l'ère préindustrielle ?",
-        "expected_answer": "Oui, les niveaux de CO2 ont augmenté de plus de 40% depuis l'ère préindustrielle, passant de 280 ppm à plus de 400 ppm.",
+        "question": "Have CO2 levels increased since the pre-industrial era?",
+        "expected_answer": "Yes, CO2 levels have increased by more than 40% since the pre-industrial era, rising from 280 ppm to over 400 ppm.",
         "category": "co2"
     },
     {
-        "question": "Le CO2 est-il bénéfique pour les plantes ?",
-        "expected_answer": "Bien que le CO2 soit nécessaire à la photosynthèse, l'augmentation excessive de CO2 peut avoir des effets négatifs sur certains écosystèmes.",
+        "question": "Is CO2 beneficial for plants?",
+        "expected_answer": "Although CO2 is necessary for photosynthesis, excessive CO2 levels can have negative effects on some ecosystems.",
         "category": "co2"
     },
-    
-    # Modèles climatiques (10 questions)
+
+    # Climate models (10 questions)
     {
-        "question": "Les modèles climatiques sont-ils fiables ?",
-        "expected_answer": "Les modèles climatiques sont des outils scientifiques fiables qui ont fait leurs preuves dans la prédiction des changements climatiques.",
+        "question": "Are climate models reliable?",
+        "expected_answer": "Climate models are reliable scientific tools that have proven effective in predicting climate changes.",
         "category": "models"
     },
     {
-        "question": "Les modèles climatiques ont-ils prédit correctement le réchauffement ?",
-        "expected_answer": "Oui, les modèles climatiques ont prédit avec précision la tendance au réchauffement observée depuis les années 1970.",
+        "question": "Have climate models accurately predicted warming?",
+        "expected_answer": "Yes, climate models have accurately predicted the warming trend observed since the 1970s.",
         "category": "models"
     },
     {
-        "question": "Les modèles climatiques surestiment-ils le réchauffement ?",
-        "expected_answer": "Non, les modèles climatiques n'ont pas surestimé le réchauffement. Les observations correspondent bien aux prédictions.",
+        "question": "Do climate models overestimate warming?",
+        "expected_answer": "No, climate models have not overestimated warming. Observations closely match predictions.",
         "category": "models"
     },
-    
-    # Pause du réchauffement (10 questions)
+
+    # Warming pause (10 questions)
     {
-        "question": "Y a-t-il eu une pause du réchauffement climatique ?",
-        "expected_answer": "La soi-disant 'pause' du réchauffement climatique a été réfutée par les données récentes qui montrent une tendance au réchauffement continue.",
+        "question": "Was there a pause in global warming?",
+        "expected_answer": "The so-called 'pause' in global warming has been refuted by recent data showing a continued warming trend.",
         "category": "pause"
     },
     {
-        "question": "Le réchauffement s'est-il arrêté entre 1998 et 2013 ?",
-        "expected_answer": "Non, le réchauffement n'a pas arrêté entre 1998 et 2013. Cette période a été mal interprétée et le réchauffement a continué.",
+        "question": "Did warming stop between 1998 and 2013?",
+        "expected_answer": "No, warming did not stop between 1998 and 2013. That period was misinterpreted, and warming continued.",
         "category": "pause"
     },
-    
-    # Cycles naturels (15 questions)
+
+    # Natural cycles (15 questions)
     {
-        "question": "Le changement climatique est-il un cycle naturel ?",
-        "expected_answer": "Bien que le climat ait connu des cycles naturels, le réchauffement actuel est principalement causé par l'activité humaine.",
+        "question": "Is climate change part of a natural cycle?",
+        "expected_answer": "Although climate has experienced natural cycles, current warming is primarily caused by human activity.",
         "category": "natural_cycles"
     },
     {
-        "question": "Les cycles solaires expliquent-ils le réchauffement actuel ?",
-        "expected_answer": "Non, les cycles solaires ne peuvent pas expliquer le réchauffement climatique actuel. L'activité solaire a même légèrement diminué.",
+        "question": "Do solar cycles explain current warming?",
+        "expected_answer": "No, solar cycles cannot explain current climate change. Solar activity has actually slightly decreased.",
         "category": "natural_cycles"
     },
     {
-        "question": "Le réchauffement actuel est-il comparable à la période médiévale chaude ?",
-        "expected_answer": "Non, le réchauffement actuel est plus rapide et plus étendu que la période médiévale chaude.",
+        "question": "Is current warming comparable to the Medieval Warm Period?",
+        "expected_answer": "No, current warming is faster and more widespread than the Medieval Warm Period.",
         "category": "natural_cycles"
     },
-    
-    # Glace et glaciers (10 questions)
+
+    # Ice and glaciers (10 questions)
     {
-        "question": "Les glaciers fondent-ils à cause du changement climatique ?",
-        "expected_answer": "Oui, la plupart des glaciers dans le monde fondent à un rythme accéléré à cause du changement climatique.",
+        "question": "Are glaciers melting because of climate change?",
+        "expected_answer": "Yes, most glaciers around the world are melting at an accelerated rate due to climate change.",
         "category": "ice"
     },
     {
-        "question": "L'Arctique perd-il de la glace ?",
-        "expected_answer": "Oui, l'Arctique perd de la glace de mer à un rythme accéléré depuis plusieurs décennies.",
+        "question": "Is the Arctic losing ice?",
+        "expected_answer": "Yes, the Arctic has been losing sea ice at an accelerated rate for several decades.",
         "category": "ice"
     },
     {
-        "question": "L'Antarctique gagne-t-il de la glace ?",
-        "expected_answer": "L'Antarctique perd de la masse de glace dans son ensemble, malgré quelques gains locaux.",
+        "question": "Is Antarctica gaining ice?",
+        "expected_answer": "Antarctica is losing ice mass overall, despite some localized gains.",
         "category": "ice"
     },
-    
-    # Niveau de la mer (10 questions)
+
+    # Sea level (10 questions)
     {
-        "question": "Le niveau de la mer augmente-t-il ?",
-        "expected_answer": "Oui, le niveau de la mer augmente à un rythme accéléré à cause du changement climatique.",
+        "question": "Is sea level rising?",
+        "expected_answer": "Yes, sea level is rising at an accelerating rate due to climate change.",
         "category": "sea_level"
     },
     {
-        "question": "L'élévation du niveau de la mer est-elle naturelle ?",
-        "expected_answer": "Bien que le niveau de la mer ait fluctué naturellement, l'élévation actuelle est principalement causée par le changement climatique anthropique.",
+        "question": "Is sea level rise natural?",
+        "expected_answer": "While sea levels have fluctuated naturally, the current rise is mainly caused by human-induced climate change.",
         "category": "sea_level"
     },
-    
-    # Événements extrêmes (10 questions)
+
+    # Extreme events (10 questions)
     {
-        "question": "Le changement climatique cause-t-il plus d'événements météorologiques extrêmes ?",
-        "expected_answer": "Oui, le changement climatique augmente la fréquence et l'intensité de nombreux événements météorologiques extrêmes.",
+        "question": "Does climate change cause more extreme weather events?",
+        "expected_answer": "Yes, climate change increases the frequency and intensity of many extreme weather events.",
         "category": "extreme_events"
     },
     {
-        "question": "Les ouragans sont-ils plus fréquents à cause du changement climatique ?",
-        "expected_answer": "Le changement climatique n'augmente pas nécessairement le nombre d'ouragans mais peut augmenter leur intensité.",
+        "question": "Are hurricanes more frequent due to climate change?",
+        "expected_answer": "Climate change does not necessarily increase the number of hurricanes but can increase their intensity.",
         "category": "extreme_events"
     },
-    
-    # Océans (10 questions)
+
+    # Oceans (10 questions)
     {
-        "question": "Les océans se réchauffent-ils ?",
-        "expected_answer": "Oui, les océans absorbent plus de 90% de l'excès de chaleur du système climatique et se réchauffent.",
+        "question": "Are the oceans warming?",
+        "expected_answer": "Yes, the oceans absorb more than 90% of the excess heat from the climate system and are warming.",
         "category": "oceans"
     },
     {
-        "question": "L'acidification des océans est-elle causée par le CO2 ?",
-        "expected_answer": "Oui, l'acidification des océans est causée par l'absorption du CO2 atmosphérique par les océans.",
+        "question": "Is ocean acidification caused by CO2?",
+        "expected_answer": "Yes, ocean acidification is caused by the absorption of atmospheric CO2 by the oceans.",
         "category": "oceans"
     },
-    
-    # Controverses (10 questions)
+
+    # Controversies (10 questions)
     {
-        "question": "Le graphique 'hockey stick' est-il fiable ?",
-        "expected_answer": "Oui, le graphique 'hockey stick' est scientifiquement fiable et a été confirmé par de nombreuses études indépendantes.",
+        "question": "Is the 'hockey stick' graph reliable?",
+        "expected_answer": "Yes, the 'hockey stick' graph is scientifically reliable and has been confirmed by many independent studies.",
         "category": "controversies"
     },
     {
-        "question": "Les scientifiques manipulent-ils les données de température ?",
-        "expected_answer": "Non, il n'y a aucune preuve de manipulation des données de température par les scientifiques du climat.",
+        "question": "Do scientists manipulate temperature data?",
+        "expected_answer": "No, there is no evidence that climate scientists manipulate temperature data.",
         "category": "controversies"
     },
     {
-        "question": "Le GIEC est-il un organisme politique ?",
-        "expected_answer": "Le GIEC est un organisme scientifique qui évalue la littérature scientifique, pas un organisme politique.",
+        "question": "Is the IPCC a political body?",
+        "expected_answer": "The IPCC is a scientific body that assesses scientific literature, not a political organization.",
         "category": "controversies"
     }
 ]

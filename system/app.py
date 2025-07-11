@@ -12,6 +12,7 @@ from mmr_utils import mmr_similarity_search
 from dotenv import load_dotenv
 from pdf_loader import PDFDocumentLoader
 from chromadb_manager import ChromaDBManager
+from llamaindex_utils import LlamaIndexChromaDBManager, create_llamaindex_chromadb_manager
 
 # Streamlit page configuration - MUST be first!
 st.set_page_config(
@@ -26,13 +27,13 @@ load_dotenv()
 # Initialize Ollama client
 ollama_client = OllamaClient()
 
-# Initialize ChromaDB
+# Initialize ChromaDB with LlamaIndex
 try:
-    chroma_manager = ChromaDBManager(
-        persist_directory="./chroma_db",
-        embedding_model="llama2:7b"  # Modèle explicite
+    # Use LlamaIndex ChromaDB manager with MMR support
+    chroma_manager = create_llamaindex_chromadb_manager(
+        persist_directory="./chroma_db"
     )
-    st.success("✅ ChromaDB initialisé avec succès")
+    st.success("✅ ChromaDB avec LlamaIndex initialisé avec succès")
     
     # Afficher les informations de la collection
     collection_info = chroma_manager.get_collection_info()
@@ -41,7 +42,7 @@ try:
         st.info(f"🤖 Modèle d'embedding: {chroma_manager.embedding_model}")
     
 except Exception as e:
-    st.error(f"❌ Erreur d'initialisation ChromaDB: {e}")
+    st.error(f"❌ Erreur d'initialisation ChromaDB LlamaIndex: {e}")
     chroma_manager = None
 
 # Define prompts as templates
@@ -109,8 +110,18 @@ def generate_search_queries(claim):
     st.session_state.tokens_used += ollama_client.tokens_used
     return result
 
-def retrieve_documents(claim, data_dir="/home/moi/Documents/internship/climat-misinformation-detection/rapport", k=3, lambda_param=0.5):
-    """Retrieve relevant documents from local PDF files using MMR selection."""
+def retrieve_documents(claim, k=3, lambda_param=0.5):
+    """Retrieve relevant documents from ChromaDB using LlamaIndex MMR."""
+    if not chroma_manager:
+        st.error("❌ ChromaDB n'est pas initialisé")
+        return []
+    
+    # Vérifier si la collection contient des documents
+    collection_info = chroma_manager.get_collection_info()
+    if collection_info.get('document_count', 0) == 0:
+        st.error("❌ Aucun document dans la base vectorielle. Veuillez d'abord indexer vos documents.")
+        return []
+    
     # Générer les requêtes de recherche
     queries_text = generate_search_queries(claim)
     queries = re.findall(r'(?:^|\n)(?:\d+\.|\*|\-)\s*(.+?)(?=\n|$)', queries_text)
@@ -118,41 +129,57 @@ def retrieve_documents(claim, data_dir="/home/moi/Documents/internship/climat-mi
         queries = [q.strip() for q in queries_text.split('\n') if q.strip()]
     if not queries:
         queries = [claim]
-    # On prend la première requête générée pour l'embedding
+    
+    # Utiliser la première requête pour la recherche
     query_for_embedding = queries[0]
-
-    # Charger et splitter les documents PDF
-    documents = PDFDocumentLoader.load_directory(data_dir)
-    splitter = SimpleTextSplitter(chunk_size=1000, chunk_overlap=200)
-    chunks = splitter.split_documents(documents)
-    if not chunks:
-        st.warning("Aucun document PDF trouvé dans le dossier spécifié.")
+    
+    # Utiliser LlamaIndex MMR search
+    if isinstance(chroma_manager, LlamaIndexChromaDBManager):
+        # Utiliser MMR intégré de LlamaIndex
+        retrieved_docs = chroma_manager.search_documents_mmr(
+            query_for_embedding, 
+            n_results=k, 
+            lambda_param=lambda_param
+        )
+    else:
+        # Fallback vers l'ancienne méthode
+        retrieved_docs = chroma_manager.search_documents(query_for_embedding, n_results=k*2)
+        
+        if len(retrieved_docs) > k:
+            # Appliquer MMR manuel si nécessaire
+            embeddings_model = OllamaEmbeddings()
+            doc_embeddings = []
+            
+            for doc in retrieved_docs:
+                doc_embedding = embeddings_model.embed_query(doc['content'])
+                doc_embeddings.append(doc_embedding)
+            
+            query_embedding = embeddings_model.embed_query(query_for_embedding)
+            selected_indices = mmr_similarity_search(doc_embeddings, query_embedding, k=k, lambda_param=lambda_param)
+            retrieved_docs = [retrieved_docs[i] for i in selected_indices]
+        else:
+            retrieved_docs = retrieved_docs[:k]
+    
+    if not retrieved_docs:
+        st.warning("Aucun document pertinent trouvé dans la base de données.")
         return []
-
-    # Générer les embeddings des chunks et de la requête
-    embeddings_model = OllamaEmbeddings()
-    chunk_texts = [chunk['page_content'] for chunk in chunks]
-    chunk_embeddings = embeddings_model.embed_documents(chunk_texts)
-    query_embedding = embeddings_model.embed_query(query_for_embedding)
-
-    # Sélectionner les meilleurs chunks avec MMR
-    selected_indices = mmr_similarity_search(chunk_embeddings, query_embedding, k=k, lambda_param=lambda_param)
-    selected_chunks = [chunks[i] for i in selected_indices]
-
+    
     # Formater les documents pour l'affichage/traitement
     all_docs = []
     doc_sources = {}
-    for i, chunk in enumerate(selected_chunks):
+    for i, doc in enumerate(retrieved_docs):
         doc_id = str(uuid.uuid4())[:8]
-        doc_content = chunk['page_content']
-        doc_source = chunk['metadata'].get('source', 'Unknown')
+        doc_content = doc['content']
+        doc_source = doc['metadata'].get('source', 'Unknown')
         all_docs.append(f"[Document {doc_id}]\n{doc_content}\n")
         doc_sources[doc_id] = {
             'source': doc_source,
             'content': doc_content,
             'query': query_for_embedding,
-            'similarity': chunk['similarity']
+            'similarity': doc.get('similarity', 0.0),
+            'score': doc.get('score', 0.0)
         }
+    
     st.session_state.current_sources = doc_sources
     return all_docs
 
@@ -216,6 +243,48 @@ with st.sidebar:
     - Generates human-readable explanations
     """)
     
+    st.header("ChromaDB Management")
+    if chroma_manager:
+        collection_info = chroma_manager.get_collection_info()
+        document_count = collection_info.get('document_count', 0)
+        
+        if document_count > 0:
+            st.success(f"✅ {document_count} documents déjà indexés")
+            st.info("Votre base vectorielle est prête à être utilisée !")
+            
+            # Option pour ajouter plus de documents
+            if st.button("📚 Ajouter plus de documents"):
+                with st.spinner("Indexation en cours..."):
+                    data_dir = "/home/moi/Documents/internship/climat-misinformation-detection/rapport"
+                    success = chroma_manager.load_and_index_documents(data_dir)
+                    if success:
+                        st.success("✅ Documents ajoutés avec succès!")
+                        st.experimental_rerun()
+                    else:
+                        st.error("❌ Erreur lors de l'indexation")
+        else:
+            st.warning("⚠️ Aucun document indexé")
+            st.info("Vous devez d'abord indexer vos documents PDF")
+            
+            # Bouton pour indexer des documents
+            if st.button("📚 Indexer des documents"):
+                with st.spinner("Indexation en cours..."):
+                    data_dir = "/home/moi/Documents/internship/climat-misinformation-detection/rapport"
+                    success = chroma_manager.load_and_index_documents(data_dir)
+                    if success:
+                        st.success("✅ Documents indexés avec succès!")
+                        st.experimental_rerun()
+                    else:
+                        st.error("❌ Erreur lors de l'indexation")
+        
+        # Bouton pour vider la collection (toujours disponible)
+        if st.button("🗑️ Vider la base"):
+            chroma_manager.clear_collection()
+            st.success("✅ Base vidée!")
+            st.experimental_rerun()
+    else:
+        st.error("❌ ChromaDB non disponible")
+    
     st.header("Statistics")
     st.metric("Tokens Used", f"{st.session_state.tokens_used:,}")
     
@@ -236,10 +305,18 @@ with st.sidebar:
 # Main interface
 claim = st.text_area("Enter the claim to fact-check:", height=100)
 
-col1, col2 = st.columns([1, 3])
+# Search options
+col1, col2, col3 = st.columns([1, 1, 2])
 with col1:
     check_button = st.button("🔍 Fact Check", type="primary")
 with col2:
+    use_mmr = st.checkbox("Use MMR", value=True, help="Maximum Marginal Relevance for diverse results")
+with col3:
+    if use_mmr:
+        lambda_param = st.slider("MMR λ", 0.0, 1.0, 0.5, 0.1, 
+                                help="λ=0: Max diversity, λ=1: Max relevance")
+    else:
+        lambda_param = 0.5  # Default value
     st.markdown("*This will retrieve relevant documents, analyze the claim, and provide an explanation.*")
 
 # Process the claim when button is clicked
@@ -250,7 +327,9 @@ if check_button and claim:
         
         # Step 1: Retrieve relevant documents
         st.markdown("### 🔎 Retrieving relevant information...")
-        retrieved_docs = retrieve_documents(claim)
+        if use_mmr:
+            st.info(f"🔍 Using MMR with λ={lambda_param}")
+        retrieved_docs = retrieve_documents(claim, lambda_param=lambda_param)
         
         # Step 2: Analyze the claim
         st.markdown("### 🧠 Analyzing claim against evidence...")
@@ -312,6 +391,9 @@ if 'showing_results' in st.session_state and st.session_state.showing_results:
             with st.expander(f"Document {doc_id} - {doc_info['source']}"):
                 st.markdown(f"**Query used**: {doc_info['query']}")
                 st.markdown(f"**Source**: {doc_info['source']}")
+                st.markdown(f"**Similarity**: {doc_info['similarity']:.3f}")
+                if 'distance' in doc_info:
+                    st.markdown(f"**Distance**: {doc_info['distance']:.3f}")
                 st.text_area(f"Content", doc_info['content'], height=200)
         
         # Highlight where sources are referenced in analysis

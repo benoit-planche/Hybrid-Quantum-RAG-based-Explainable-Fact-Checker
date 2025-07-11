@@ -54,23 +54,25 @@ class ComprehensiveRAGEvaluator:
         )
         
         # Prompts pour le fact-checking
-        self.fact_checking_prompt = """Tu es un expert en fact-checking sur le changement climatique.
+        self.fact_checking_prompt = """You are a fact-checking expert on climate change.
 
-Contexte scientifique:
+Scientific context:
 {context}
 
-Question à vérifier: {question}
+Question to verify:
+{question}
 
-Analyse cette question en te basant UNIQUEMENT sur le contexte fourni.
-Si le contexte ne contient pas d'information pertinente, indique-le clairement.
+Analyze this question based ONLY on the context provided.
+If the context does not contain relevant information, state this clearly.
 
-IMPORTANT: Limite ta réponse à 500 mots maximum.
+IMPORTANT: Limit your answer to a maximum of 500 words.
 
-Format ta réponse comme suit:
-ANALYSE: [Ton analyse basée sur le contexte]
-VERDICT: [VRAI/FAUX/MIXTE/INCONNU]
-EXPLICATION: [Explication de ton verdict]
-SOURCES: [Références au contexte utilisé]
+Format your answer as follows:
+
+ANALYSIS: [Your analysis based on the context]
+VERDICT: [TRUE / FALSE / MIXED / UNKNOWN]
+EXPLANATION: [Explanation of your verdict]
+SOURCES: [References to the context used]
 """
     
     async def get_rag_response(self, question: str) -> Dict[str, Any]:
@@ -372,7 +374,7 @@ async def main():
     print(f"✅ ChromaDB contient {collection_info['document_count']} documents")
     
     # Évaluer avec différentes tailles de dataset
-    test_sizes = [10, 25, 50]  # Commencer petit pour tester
+    test_sizes = [10]  # Commencer petit pour tester
     
     for size in test_sizes:
         print(f"\n🧪 Test avec {size} questions...")

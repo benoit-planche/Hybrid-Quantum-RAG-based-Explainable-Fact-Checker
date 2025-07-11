@@ -6,7 +6,8 @@ import os
 import chromadb
 from chromadb.config import Settings
 from typing import List, Dict, Any
-from ollama_utils import OllamaEmbeddings, SimpleTextSplitter
+from llama_index.embeddings.ollama import OllamaEmbeddings
+from ollama_utils import SimpleTextSplitter
 from pdf_loader import PDFDocumentLoader
 
 class ChromaDBManager:
@@ -69,7 +70,7 @@ class ChromaDBManager:
             print(f"📄 {len(documents)} documents chargés")
             
             # Splitter les documents
-            splitter = SimpleTextSplitter(chunk_size=1000, chunk_overlap=200)
+            splitter = SimpleTextSplitter(chunk_size=500, chunk_overlap=100)
             chunks = splitter.split_documents(documents)
             print(f"✂️ {len(chunks)} chunks créés")
             

@@ -77,7 +77,7 @@ class OllamaEmbeddings:
 class SimpleTextSplitter:
     """Simple text splitter to replace LangChain's RecursiveCharacterTextSplitter"""
     
-    def __init__(self, chunk_size=1000, chunk_overlap=200):
+    def __init__(self, chunk_size=500, chunk_overlap=100):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
     

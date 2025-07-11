@@ -7,9 +7,20 @@ from typing import List, Dict
 
 def cosine_similarity(a: List[float], b: List[float]) -> float:
     """Calculate cosine similarity between two vectors"""
-    a = np.array(a)
-    b = np.array(b)
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+    # Convert to numpy arrays if they aren't already
+    if not isinstance(a, np.ndarray):
+        a = np.array(a)
+    if not isinstance(b, np.ndarray):
+        b = np.array(b)
+    
+    # Handle zero vectors
+    norm_a = np.linalg.norm(a)
+    norm_b = np.linalg.norm(b)
+    
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    
+    return float(np.dot(a, b) / (norm_a * norm_b))
 
 def calculate_mmr_score(query_embedding: List[float], doc_embedding: List[float], 
                        selected_embeddings: List[List[float]], lambda_param: float = 0.5) -> float:
@@ -54,17 +65,29 @@ def mmr_similarity_search(embeddings: List[List[float]], query_embedding: List[f
     Returns:
         List of document indices selected by MMR
     """
+    # Ensure embeddings are lists, not numpy arrays
+    embeddings_list = []
+    for emb in embeddings:
+        if isinstance(emb, np.ndarray):
+            embeddings_list.append(emb.tolist())
+        else:
+            embeddings_list.append(emb)
+    
+    # Ensure query embedding is a list
+    if isinstance(query_embedding, np.ndarray):
+        query_embedding = query_embedding.tolist()
+    
     selected_indices = []
     selected_embeddings = []
     
     # First document: highest relevance
-    similarities = [cosine_similarity(query_embedding, emb) for emb in embeddings]
+    similarities = [cosine_similarity(query_embedding, emb) for emb in embeddings_list]
     first_idx = max(range(len(similarities)), key=lambda i: similarities[i])
     selected_indices.append(first_idx)
-    selected_embeddings.append(embeddings[first_idx])
+    selected_embeddings.append(embeddings_list[first_idx])
     
     # Remaining documents: MMR selection
-    remaining_indices = [i for i in range(len(embeddings)) if i != first_idx]
+    remaining_indices = [i for i in range(len(embeddings_list)) if i != first_idx]
     
     for _ in range(min(k - 1, len(remaining_indices))):
         best_mmr_score = -1
@@ -73,7 +96,7 @@ def mmr_similarity_search(embeddings: List[List[float]], query_embedding: List[f
         for idx in remaining_indices:
             mmr_score = calculate_mmr_score(
                 query_embedding, 
-                embeddings[idx], 
+                embeddings_list[idx], 
                 selected_embeddings, 
                 lambda_param
             )
@@ -84,7 +107,7 @@ def mmr_similarity_search(embeddings: List[List[float]], query_embedding: List[f
         
         if best_idx != -1:
             selected_indices.append(best_idx)
-            selected_embeddings.append(embeddings[best_idx])
+            selected_embeddings.append(embeddings_list[best_idx])
             remaining_indices.remove(best_idx)
     
     return selected_indices
@@ -127,8 +150,20 @@ def calculate_diversity_metrics(embeddings: List[List[float]]) -> Dict[str, floa
 
 def simple_similarity_search(embeddings: List[List[float]], query_embedding: List[float], k: int = 5) -> List[int]:
     """Simple similarity search for comparison with MMR"""
+    # Ensure embeddings are lists, not numpy arrays
+    embeddings_list = []
+    for emb in embeddings:
+        if isinstance(emb, np.ndarray):
+            embeddings_list.append(emb.tolist())
+        else:
+            embeddings_list.append(emb)
+    
+    # Ensure query embedding is a list
+    if isinstance(query_embedding, np.ndarray):
+        query_embedding = query_embedding.tolist()
+    
     similarities = []
-    for i, embedding in enumerate(embeddings):
+    for i, embedding in enumerate(embeddings_list):
         sim = cosine_similarity(query_embedding, embedding)
         similarities.append((i, sim))
     
