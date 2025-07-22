@@ -10,7 +10,7 @@ import os
 # Ajouter le dossier system au path
 sys.path.append('../system')
 
-from evaluate_rag_chromadb import ComprehensiveRAGEvaluator
+from eval.evaluate_rag_cassandra_mmr import ComprehensiveRAGEvaluator
 from climate_dataset import get_random_subset
 
 async def quick_test():

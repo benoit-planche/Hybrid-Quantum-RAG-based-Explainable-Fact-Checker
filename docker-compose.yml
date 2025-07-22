@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  cassandra:
+    image: cassandra:5.0
+    container_name: fact_checker_cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=fact_checker_cluster
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+      - HEAP_NEWSIZE=100M
+      - MAX_HEAP_SIZE=2G
+      - CASSANDRA_HEAP_SIZE=2G
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "cqlsh",
+          "-u",
+          "cassandra",
+          "-p",
+          "cassandra",
+          "-e",
+          "describe keyspaces",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  cassandra_data:

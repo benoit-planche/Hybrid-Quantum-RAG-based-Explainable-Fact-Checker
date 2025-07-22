@@ -161,15 +161,17 @@ def format_prompt(template: str, **kwargs) -> str:
 def extract_verdict(text: str) -> str:
     """Extract verdict from analysis text"""
     verdict_patterns = [
-        r'VERDICT:\s*(\w+)',
-        r'Verdict:\s*(\w+)',
-        r'Result:\s*(\w+)',
-        r'Conclusion:\s*(\w+)'
+        r'VERDICT:\s*(TRUE|FALSE)(?:\s+EXPLANATION)?',
+        r'Verdict:\s*(TRUE|FALSE)(?:\s+EXPLANATION)?',
+        r'Result:\s*(TRUE|FALSE)(?:\s+EXPLANATION)?',
+        r'Conclusion:\s*(TRUE|FALSE)(?:\s+EXPLANATION)?'
     ]
     
     for pattern in verdict_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
-            return match.group(1).upper()
+            # Extraire seulement TRUE ou FALSE
+            verdict = match.group(1).strip().upper()
+            return verdict
     
     return "UNKNOWN" 
