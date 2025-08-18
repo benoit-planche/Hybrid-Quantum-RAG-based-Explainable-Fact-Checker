@@ -64,6 +64,9 @@ tmp/
 *.json
 data/
 rapport/
+src/quantum/qasm_circuits_4qubits
+src/quantum/quantum_db
+src/quantum/quantum_db_8qubits
 
 # ChromaDB files
 system/chroma_db/
