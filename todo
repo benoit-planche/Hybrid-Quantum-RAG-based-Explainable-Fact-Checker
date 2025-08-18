@@ -1,0 +1,111 @@
+Top 10 chunks les plus similaires (sans duplication) :
+[PDF d'origine inconnu] — Chunk ID: None_doc_595 — Similarité (overlap): 0.8346
+
+Extrait du chunk : [Texte non trouvé pour ce chunk]
+
+antarctica-gaining-ice-basic.pdf — Chunk ID: None_doc_574 — Similarité (overlap): 0.7808
+
+Extrait du chunk : This is the print version of the Skeptical Science article ' Antarctica is gaining ice ', which can be found at http://sks.to/antarctica. Is Antarctica losing or gaining ice? What The Science Says: Antarctic sea ice extent has expanded at times but is currently (2023) low. In contrast, Antarctica ...
+
+Antarctica-absolute-temperatures-too-cold-ice-loss-intermediate.pdf — Chunk ID: None_doc_4292 — Similarité (overlap): 0.7020
+
+Extrait du chunk : This is the print version of the Skeptical Science article ' Antarctica is too cold to lose ice ', which can be found at http://sks.to/toocold. Why do glaciers lose ice? What The Science Says: Antarctica is losing ice because its glaciers are speeding up. This is due to melt water lubricating the ...
+
+Prompt LLM :
+
+
+You are a decisive fact-checker. Your job is to verify the following claim using the provided evidence. 
+You MUST take a clear position based on the available evidence.
+
+CLAIM: Is Antarctica losing land ice?
+
+EVIDENCE (from chunks):
+[Source PDF: [PDF d'origine inconnu]]
+[Chunk ID: None_doc_595]
+[Texte non trouvé pour ce chunk]
+
+[Source PDF: antarctica-gaining-ice-basic.pdf]
+[Chunk ID: None_doc_574]
+This is the print version of the 
+Skeptical Science
+ article '
+Antarctica is gaining ice
+', which can be found at http://sks.to/antarctica.
+Is Antarctica losing or gaining ice?
+What The Science Says:
+Antarctic sea ice extent has expanded at times but is currently (2023) low. In contrast, Antarctica is
+losing land ice at an accelerating rate and that has serious implications for sea level rise.
+Climate Myth: Antarctica is gaining ice
+"[Ice] is expanding in much of Antarctica, contrary to the widespread public belief that global warming is
+melting the continental ice cap." (
+Greg Roberts, 
+The Australian
+)
+At a glance
+Who discovered the great, South Pole-straddling continent of Antarctica? According to the National
+Geographic, Captain Cook came within an estimated 80 miles of it in the late 1700s, but the three first
+'official' discoveries all took place in 1820 by Russian, British and American teams of seafarers respectively.
+Since that initial discovery, Antarctica has attracted and inspired researchers and explorers alike. It's a
+challenging place, fringed by sea-ice that, unlike the Arctic, has not steadily declined but whose extent
+fluctuates on a seasonal basis: it's currently (February 2023) at a very low coverage, but it can and does
+recover from such dips. Antarctic sea-ice is no great problem, with the exception of albedo-loss in low extent
+years: if it all melted, it would have no effect on global sea-levels. It's the stuff on land we need to focus
+upon.
+The land of ...
+
+[Source PDF: Antarctica-absolute-temperatures-too-cold-ice-loss-intermediate.pdf]
+[Chunk ID: None_doc_4292]
+This is the print version of the 
+Skeptical Science
+ article '
+Antarctica is too cold to lose ice
+', which can be found at http://sks.to/toocold.
+Why do glaciers lose ice?
+What The Science Says:
+Antarctica is losing ice because its glaciers are speeding up. This is due to melt water lubricating the
+base of the glaciers and the removal of ice shelves which act as a "speed bump" slowing the glacier
+flow. The ice shelves are thinning due to warming ocean waters.
+Climate Myth: Antarctica is too cold to lose ice
+"The real issue is absolute temperatures. Some of the regions in which 
+GRACE claims ice loss in East
+Antarctica average colder than -30°C 
+during the summer, and never, ever get above freezing. How can
+you melt 
+ice at those temperatures?" (
+Steve Goddard
+)
+Glaciers are large viscous masses of ice which creep naturally through a process called internal
+deformation. This “creep” or movement is caused by gravity and the weight of accumulated snow and ice
+forcing the ice to deform like plastic.
+(Figure 1: Midtsdalsbreen, Southern Norway, Personal Photograph)
+Glaciers gain mass through accumulation of snowfall and through re-freezing of meltwater but lose mass
+(termed ablation) through surface melt, basal melt, sublimation and iceberg calving (Figure 2, right). The
+accumulation of ice primarily occurs in the glacier’s accumulation zone and ice loss generally originates in
+the glacier’s ablation zone (Figure 2, left).
+(Figure2, accumulation/ablation zones, 
+www.physicalgeograp...
+
+CRITICAL INSTRUCTIONS:
+- Be DECISIVE and take a clear position. Do not hedge or be overly cautious.
+- If the evidence supports the claim, say TRUE.
+- If the evidence contradicts the claim, say FALSE.
+- Only say UNVERIFIABLE if there is truly insufficient evidence.
+- Look for direct statements that answer the claim.
+- Quote specific text from the evidence to support your verdict.
+
+IMPORTANT: The evidence contains scientific information about Antarctica. Look for direct statements about ice loss/gain.
+
+Format your response as follows:
+VERDICT: [TRUE/FALSE/UNVERIFIABLE]
+EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
+
+
+Réponse LLM :
+
+VERDICT: TRUE
+
+The evidence provided in the chunks clearly supports the claim that Antarctica is losing land ice. The first chunk provides a summary of the current state of Antarctic sea ice, which is at a low coverage but can recover from dips. However, the main focus of the evidence is on the loss of land ice, which is accelerating due to melt water lubricating the base of glaciers and the removal of ice shelves that act as a "speed bump" slowing the glacier flow (Source PDF: Antarctica-absolute-temperatures-too-cold-ice-loss-intermediate.pdf). The evidence also explains why glaciers lose ice, which is due to melt water lubricating the base of the glaciers and the removal of ice shelves (Source PDF: antarctica-gaining-ice-basic.pdf).
+
+The second chunk provides a clear position on the claim by stating that Antarctica is losing land ice because its glaciers are speeding up due to warming ocean waters (Source PDF: Skeptical Science - Antarctica is too cold to lose ice.pdf). This evidence directly contradicts the claim that Antarctica is gaining ice, and therefore supports the verdict of TRUE.
+
+Therefore, based on the provided evidence, it can be definitively stated that Antarctica is losing land ice.

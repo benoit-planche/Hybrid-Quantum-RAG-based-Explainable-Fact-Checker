@@ -10,9 +10,12 @@ services:
       - CASSANDRA_CLUSTER_NAME=fact_checker_cluster
       - CASSANDRA_DC=datacenter1
       - CASSANDRA_RACK=rack1
-      - HEAP_NEWSIZE=100M
-      - MAX_HEAP_SIZE=2G
-      - CASSANDRA_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+      - MAX_HEAP_SIZE=3G
+      - CASSANDRA_HEAP_SIZE=3G
+      - CASSANDRA_CONCURRENT_WRITES=32
+      - CASSANDRA_CONCURRENT_READS=32
+      - CASSANDRA_CONCURRENT_COUNTER_WRITES=32
     deploy:
       resources:
         limits:

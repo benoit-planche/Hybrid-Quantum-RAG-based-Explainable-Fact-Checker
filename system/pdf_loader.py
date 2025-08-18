@@ -80,3 +80,8 @@ class PDFDocumentLoader:
                 'file_path': file_path
             }
         } 
+    
+    @staticmethod
+    def load_single_file(file_path: str) -> Dict[str, Any]:
+        """Alias pour load_single_pdf - charge un seul fichier PDF"""
+        return PDFDocumentLoader.load_single_pdf(file_path) 
