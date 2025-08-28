@@ -32,6 +32,10 @@ def quantum_overlap_similarity(qc1, qc2):
         return overlap
     except Exception as e:
         print(f"⚠️ Erreur dans quantum_overlap_similarity: {e}")
+        print(f"   Circuit 1: {qc1.name if hasattr(qc1, 'name') else 'Unknown'}")
+        print(f"   Circuit 2: {qc2.name if hasattr(qc2, 'name') else 'Unknown'}")
+        print(f"   Circuit 1 num_qubits: {qc1.num_qubits if hasattr(qc1, 'num_qubits') else 'Unknown'}")
+        print(f"   Circuit 2 num_qubits: {qc2.num_qubits if hasattr(qc2, 'num_qubits') else 'Unknown'}")
         # Fallback vers une similarité basique
         return 0.5
 
@@ -93,7 +97,14 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
             with time_operation_context(f"circuit_comparison_{i}", {"file": qasm_path}):
                 qc_doc = load_qasm_circuit(qasm_path)
                 score = quantum_overlap_similarity(qc_query, qc_doc)
-                chunk_id = os.path.basename(qasm_path).replace('.qasm', '')
+                # Extraire le chunk_id en gérant les suffixes _8qubits et les préfixes None_
+                filename = os.path.basename(qasm_path).replace('.qasm', '')
+                if filename.endswith('_8qubits'):
+                    filename = filename.replace('_8qubits', '')
+                if filename.startswith('None_'):
+                    chunk_id = filename.replace('None_', '')  # Enlever le préfixe None_
+                else:
+                    chunk_id = filename
                 scores.append((score, qasm_path, chunk_id))
         
         with time_operation_context("results_sorting"):

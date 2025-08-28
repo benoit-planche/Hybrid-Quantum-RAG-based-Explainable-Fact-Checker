@@ -94,6 +94,7 @@ CLIMATE_DATASET = [
         "expected_verdict": "TRUE",
         "expected_output": "CO2 is a major greenhouse gas that significantly contributes to global warming.",
         "category": "co2"
+        
     },
     {
         "claim": "CO2 is a pollutant.",
@@ -584,7 +585,7 @@ if __name__ == "__main__":
     other_count = 0
     
     for item in CLIMATE_DATASET:
-        answer = item["expected_answer"].upper()
+        answer = item["expected_verdict"].upper()
         if answer.startswith("TRUE"):
             true_count += 1
         elif answer.startswith("FALSE"):
