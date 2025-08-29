@@ -73,3 +73,6 @@ src/quantum/quantum_db_8qubits
 system/chroma_db/
 *.bin
 *.sqlite3
+
+# Cassandra
+cassandra_dump_docker_20250829_174032/
