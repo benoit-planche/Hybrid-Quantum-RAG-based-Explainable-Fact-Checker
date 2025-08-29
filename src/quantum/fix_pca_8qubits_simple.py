@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script pour créer le modèle PCA manquant
+Script simple pour créer le modèle PCA 8 qubits
 """
 
 import os
@@ -8,20 +8,16 @@ import sys
 import pickle
 import numpy as np
 from pathlib import Path
+from cassandra.cluster import Cluster
 
-# Ajouter les chemins
-sys.path.append('../system')
-sys.path.append('.')
-
-def create_pca_model():
-    """Crée le modèle PCA à partir des embeddings existants"""
-    print("🔧 Création du modèle PCA...")
+def create_pca_model_8qubits():
+    """Crée le modèle PCA 8 qubits à partir des embeddings existants"""
+    print("🔧 Création du modèle PCA 8 qubits...")
     
     try:
-        from cassandra_manager import CassandraVectorStoreManager
-        
-        cassandra_manager = CassandraVectorStoreManager()
-        session = cassandra_manager.session
+        # Connexion directe à Cassandra
+        cluster = Cluster(['localhost'], port=9042)
+        session = cluster.connect()
         
         # Récupérer tous les embeddings
         print("📊 Récupération des embeddings...")
@@ -48,20 +44,21 @@ def create_pca_model():
         embeddings_array = np.array(embeddings)
         print(f"📐 Forme des embeddings: {embeddings_array.shape}")
         
-        # Créer le PCA
+        # Créer le PCA pour 8 qubits
         from sklearn.decomposition import PCA
         
-        print("🔧 Entraînement du PCA...")
+        print("🔧 Entraînement du PCA 8 qubits...")
         pca = PCA(n_components=8, random_state=42)
         pca.fit(embeddings_array)
         
         # Sauvegarder le modèle
-        pca_path = Path("src/quantum/pca_model.pkl")
+        pca_path = Path("src/quantum/pca_model_8qubits.pkl")
         with open(pca_path, 'wb') as f:
             pickle.dump(pca, f)
         
-        print(f"✅ Modèle PCA sauvegardé: {pca_path}")
+        print(f"✅ Modèle PCA 8 qubits sauvegardé: {pca_path}")
         print(f"📊 Variance expliquée: {pca.explained_variance_ratio_.sum():.4f}")
+        print(f"🔧 Composantes: {pca.n_components_}")
         
         return True
         
@@ -70,4 +67,4 @@ def create_pca_model():
         return False
 
 if __name__ == "__main__":
-    create_pca_model() 
+    create_pca_model_8qubits()

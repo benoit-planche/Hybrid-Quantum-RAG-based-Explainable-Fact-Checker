@@ -61,7 +61,7 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
             with time_operation_context("pca_loading"):
                 try:
                     import joblib
-                    pca_model_path = "src/quantum/pca_model.pkl"
+                    pca_model_path = "src/quantum/pca_model_8qubits.pkl"
                     if os.path.exists(pca_model_path):
                         pca = joblib.load(pca_model_path)
                         print("✅ PCA fixe chargé depuis le fichier")
