@@ -75,4 +75,4 @@ system/chroma_db/
 *.sqlite3
 
 # Cassandra
-cassandra_dump_docker_20250829_174032/
+cassandra_dump_docker_20250829_174032
