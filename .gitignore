@@ -76,3 +76,4 @@ system/chroma_db/
 
 # Cassandra
 cassandra_dump_docker_20250829_174032
+embeddings_dump_*
