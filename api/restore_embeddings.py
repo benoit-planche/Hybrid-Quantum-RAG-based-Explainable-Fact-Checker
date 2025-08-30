@@ -75,14 +75,14 @@ def verify_restoration(session):
     
     try:
         # Compter les embeddings non-null
-        count_query = "SELECT COUNT(*) FROM fact_checker_keyspace.fact_checker_docs WHERE vector != null ALLOW FILTERING"
+        count_query = "SELECT COUNT(*) FROM fact_checker_keyspace.fact_checker_docs WHERE vector IS NOT NULL ALLOW FILTERING"
         result = session.execute(count_query)
         count = result.one()[0]
         
         print(f"✅ {count} embeddings trouvés dans Cassandra")
         
         # Vérifier un exemple
-        sample_query = "SELECT row_id, vector FROM fact_checker_keyspace.fact_checker_docs WHERE vector != null LIMIT 1 ALLOW FILTERING"
+        sample_query = "SELECT row_id, vector FROM fact_checker_keyspace.fact_checker_docs WHERE vector IS NOT NULL LIMIT 1 ALLOW FILTERING"
         sample_result = session.execute(sample_query)
         sample_row = sample_result.one()
         

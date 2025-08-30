@@ -25,22 +25,26 @@ def dump_embeddings_only(session):
     """Dumper uniquement les embeddings"""
     print("📊 Récupération des embeddings depuis Cassandra...")
     
-    # Récupérer tous les embeddings non-null
-    query = "SELECT row_id, vector FROM fact_checker_docs WHERE vector != null ALLOW FILTERING"
+    # Récupérer TOUS les documents (pas de filtrage sur vector)
+    query = "SELECT row_id, vector FROM fact_checker_keyspace.fact_checker_docs"
     rows = session.execute(query)
     
     embeddings_data = {}
     count = 0
+    total_rows = 0
     
     for row in rows:
-        if row.vector is not None:
+        total_rows += 1
+        
+        # Filtrer côté Python pour les embeddings non-null
+        if row.vector is not None and len(row.vector) > 0:
             embeddings_data[row.row_id] = np.array(row.vector)
             count += 1
             
             if count % 100 == 0:
                 print(f"   📥 {count} embeddings récupérés...")
     
-    print(f"✅ {count} embeddings récupérés au total")
+    print(f"✅ {count} embeddings récupérés sur {total_rows} documents totaux")
     return embeddings_data
 
 def save_embeddings_dump(embeddings_data, output_file):
