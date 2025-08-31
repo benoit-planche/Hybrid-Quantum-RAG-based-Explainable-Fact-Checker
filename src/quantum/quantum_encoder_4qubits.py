@@ -98,6 +98,13 @@ def create_qasm_directory_4qubits():
         print(f"📁 Répertoire créé: {qasm_dir}")
     return qasm_dir
 
+def load_qasm_circuit_4qubits(qasm_path):
+    """
+    Charge un circuit QASM 4 qubits
+    """
+    from qiskit import QuantumCircuit
+    return QuantumCircuit.from_qasm_file(qasm_path)
+
 if __name__ == "__main__":
     print("🔬 Test de l'encodeur quantique 4 qubits")
     

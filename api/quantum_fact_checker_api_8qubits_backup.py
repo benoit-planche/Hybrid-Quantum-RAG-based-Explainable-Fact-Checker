@@ -156,25 +156,17 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
                 self.cassandra_session = session
             
             # Le chunk_id est maintenant au format "doc_157" (après nettoyage dans quantum_search.py)
-            # Essayer d'abord avec partition_id = "None"
             partition_id = "None"
             row_id = chunk_id  # Utiliser "doc_157" comme row_id
             
             query = "SELECT body_blob, metadata_s FROM fact_checker_keyspace.fact_checker_docs WHERE partition_id=%s AND row_id=%s;"
             row = session.execute(query, (partition_id, row_id)).one()
             
-            # Si pas trouvé, essayer de récupérer directement par row_id
-            if not row or not row.body_blob:
-                query_fallback = "SELECT body_blob, metadata_s FROM fact_checker_keyspace.fact_checker_docs WHERE row_id=%s LIMIT 1;"
-                row = session.execute(query_fallback, (row_id,)).one()
-            
             if row and row.body_blob:
                 chunk_text = row.body_blob
                 pdf_name = row.metadata_s.get('source', '[PDF inconnu]') if row.metadata_s else '[PDF inconnu]'
-                print(f"✅ Chunk {chunk_id} récupéré: {len(chunk_text)} caractères, PDF: {pdf_name}")
                 return chunk_text, pdf_name
             else:
-                print(f"⚠️ Chunk {chunk_id} non trouvé ou vide")
                 return "[Texte non trouvé]", "[PDF inconnu]"
                 
         except Exception as e:
