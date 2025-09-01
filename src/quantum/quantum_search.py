@@ -90,25 +90,52 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
             with time_operation_context("amplitude_encoding"):
                 qc_query = amplitude_encoding(query_emb_reduced, n_qubits)
     
-    with time_operation_context("quantum_similarity_computation", {"n_files": len(list_qasm_files(db_folder))}):
+    # Pré-filtrer les candidats via Cassandra pour limiter le nombre de QASM comparés
+    if cassandra_manager is not None:
+        with time_operation_context("prefilter_candidates"):
+            try:
+                base_results = cassandra_manager.search_documents_simple(query_text, n_results=300)
+                candidate_files = []
+                for res in base_results:
+                    chunk_id = res.get('metadata', {}).get('chunk_id') or res.get('id') or res.get('chunk_id')
+                    if not chunk_id:
+                        continue
+                    # Construire le nom du fichier QASM attendu
+                    if n_qubits == 4:
+                        qasm_name = f"embedding_4qubits_None_{chunk_id}.qasm"
+                    else:
+                        qasm_name = f"{chunk_id}.qasm"
+                    qasm_path = os.path.join(db_folder, qasm_name)
+                    if os.path.exists(qasm_path):
+                        candidate_files.append(qasm_path)
+                qasm_files = candidate_files if len(candidate_files) > 0 else list_qasm_files(db_folder)
+            except Exception:
+                qasm_files = list_qasm_files(db_folder)
+    else:
         qasm_files = list_qasm_files(db_folder)
+    
+    with time_operation_context("quantum_similarity_computation", {"n_files": len(qasm_files)}):
         scores = []
         for i, qasm_path in enumerate(qasm_files):
             with time_operation_context(f"circuit_comparison_{i}", {"file": qasm_path}):
                 qc_doc = load_qasm_circuit(qasm_path)
                 score = quantum_overlap_similarity(qc_query, qc_doc)
-                # Extraire le chunk_id en gérant les suffixes _8qubits et les préfixes None_
+                # Extraire le chunk_id en gérant les préfixes/suffixes de nommage
                 filename = os.path.basename(qasm_path).replace('.qasm', '')
+                # Retirer le suffixe spécifique 8 qubits si présent
                 if filename.endswith('_8qubits'):
                     filename = filename.replace('_8qubits', '')
+                # Pour les QASM 4 qubits: 'embedding_4qubits_None_doc_XXXX' → 'doc_XXXX'
+                if filename.startswith('embedding_4qubits_'):
+                    filename = filename.replace('embedding_4qubits_', '')
+                # Retirer le préfixe 'None_' si présent
                 if filename.startswith('None_'):
-                    chunk_id = filename.replace('None_', '')  # Enlever le préfixe None_
-                else:
-                    chunk_id = filename
+                    filename = filename.replace('None_', '')
+                chunk_id = filename
                 scores.append((score, qasm_path, chunk_id))
-        
-        with time_operation_context("results_sorting"):
-            scores.sort(reverse=True, key=lambda x: x[0])
+    
+    with time_operation_context("results_sorting"):
+        scores.sort(reverse=True, key=lambda x: x[0])
     
     return scores[:k]
 

@@ -165,20 +165,17 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
             
             # Si pas trouvé, essayer de récupérer directement par row_id
             if not row or not row.body_blob:
-                query_fallback = "SELECT body_blob, metadata_s FROM fact_checker_keyspace.fact_checker_docs WHERE row_id=%s LIMIT 1;"
+                query_fallback = "SELECT body_blob, metadata_s FROM fact_checker_keyspace.fact_checker_docs WHERE row_id=%s LIMIT 1 ALLOW FILTERING;"
                 row = session.execute(query_fallback, (row_id,)).one()
             
             if row and row.body_blob:
                 chunk_text = row.body_blob
                 pdf_name = row.metadata_s.get('source', '[PDF inconnu]') if row.metadata_s else '[PDF inconnu]'
-                print(f"✅ Chunk {chunk_id} récupéré: {len(chunk_text)} caractères, PDF: {pdf_name}")
                 return chunk_text, pdf_name
             else:
-                print(f"⚠️ Chunk {chunk_id} non trouvé ou vide")
                 return "[Texte non trouvé]", "[PDF inconnu]"
                 
-        except Exception as e:
-            print(f"⚠️ Erreur récupération chunk {chunk_id}: {e}")
+        except Exception:
             return "[Erreur de récupération]", "[Erreur]"
     
     def generate_llm_response(self, claim: str, chunk_ids: List[str]) -> tuple[str, str]:
@@ -210,7 +207,6 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
             return prompt, response
             
         except Exception as e:
-            print(f"❌ Erreur génération LLM: {e}")
             return "", f"Erreur lors de l'analyse: {str(e)}"
     
     def parse_llm_response(self, response: str) -> Dict[str, Any]:
@@ -337,30 +333,12 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
             chunk_ids = [chunk_id for score, qasm_path, chunk_id in results]
             similarity_scores = [score for score, qasm_path, chunk_id in results]
             
-            # Afficher les chunks récupérés (debug)
-            print(f"🔍 Chunks récupérés par l'API:")
-            for i, (score, qasm_path, chunk_id) in enumerate(results):
-                chunk_text, pdf_name = self.get_chunk_info(chunk_id)
-                print(f"  {i+1}. Score: {score:.3f}, PDF: {pdf_name}, Chunk: {chunk_id}")
-                print(f"     Texte: {chunk_text[:100]}...")
-            
             # Générer la réponse LLM
             with time_operation_context("llm_analysis"):
                 prompt, llm_response = self.generate_llm_response(request.message, chunk_ids)
             
-            # Debug: Afficher la réponse LLM brute
-            print(f"🔍 Réponse LLM brute reçue:")
-            print(f"'{llm_response}'")
-            print(f"🔍 Longueur: {len(llm_response)} caractères")
-            
             # Parser la réponse LLM
             llm_result = self.parse_llm_response(llm_response)
-            
-            # Debug: Afficher le résultat du parsing
-            print(f"🔍 Résultat du parsing:")
-            print(f"Verdict: {llm_result['verdict']}")
-            print(f"Confidence: {llm_result['confidence']}")
-            print(f"Explication: {llm_result['explanation'][:100]}...")
             
             # Calculer le score de certitude
             certainty_score = self.calculate_certainty_score(similarity_scores, llm_result)
@@ -372,6 +350,30 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
                 if pdf_name not in sources_used:
                     sources_used.append(pdf_name)
             
+            # Log détaillé des chunks récupérés (top 10)
+            print(f"\n🔍 TOP 10 CHUNKS RÉCUPÉRÉS PAR LE CIRCUIT QUANTIQUE:")
+            print(f"{'='*80}")
+            for i, (score, _qasm_path, chunk_id) in enumerate(results[:10]):
+                chunk_text, pdf_name = self.get_chunk_info(chunk_id)
+                excerpt = chunk_text[:200] + ("..." if len(chunk_text) > 200 else "")
+                print(f"{i+1:2d}. Chunk: {chunk_id}")
+                print(f"    📊 Similarité: {score:.4f}")
+                print(f"    📄 PDF: {pdf_name}")
+                print(f"    📝 Extrait: {excerpt}")
+                print(f"    {'-'*60}")
+            
+            # Log de la réponse brute du LLM
+            print(f"\n🤖 RÉPONSE BRUTE DU LLM (OLLAMA):")
+            print(f"{'='*80}")
+            print(f"📝 Prompt envoyé:")
+            print(f"{'='*40}")
+            print(prompt)
+            print(f"{'='*40}")
+            print(f"📤 Réponse brute reçue:")
+            print(f"{'='*40}")
+            print(llm_response)
+            print(f"{'='*40}")
+            
             processing_time = time.time() - start_time
             
             return FactCheckResponse(
@@ -382,7 +384,7 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
                 confidence_level=llm_result['confidence'],
                 sources_used=sources_used,
                 processing_time=processing_time,
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
             
         except Exception as e:
