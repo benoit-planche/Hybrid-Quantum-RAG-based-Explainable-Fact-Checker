@@ -317,9 +317,10 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
         
         try:
             # Démarrer la session de performance
-            start_performance_session()
+            start_time = time.time()
             
             # Recherche quantique
+            quantum_search_start = time.time()
             with time_operation_context("quantum_search"):
                 results = retrieve_top_k(
                     request.message,
@@ -328,27 +329,47 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
                     n_qubits=self.n_qubits,
                     cassandra_manager=self.cassandra_manager
                 )
+            quantum_search_time = time.time() - quantum_search_start
             
             # Analyser les résultats
             chunk_ids = [chunk_id for score, qasm_path, chunk_id in results]
             similarity_scores = [score for score, qasm_path, chunk_id in results]
             
             # Générer la réponse LLM
+            llm_start = time.time()
             with time_operation_context("llm_analysis"):
                 prompt, llm_response = self.generate_llm_response(request.message, chunk_ids)
+            llm_time = time.time() - llm_start
             
             # Parser la réponse LLM
+            parsing_start = time.time()
             llm_result = self.parse_llm_response(llm_response)
+            parsing_time = time.time() - parsing_start
             
             # Calculer le score de certitude
+            score_start = time.time()
             certainty_score = self.calculate_certainty_score(similarity_scores, llm_result)
+            score_time = time.time() - score_start
             
             # Récupérer les sources utilisées
+            sources_start = time.time()
             sources_used = []
             for chunk_id in chunk_ids[:5]:  # Limiter aux 5 premières sources
                 _, pdf_name = self.get_chunk_info(chunk_id)
                 if pdf_name not in sources_used:
                     sources_used.append(pdf_name)
+            sources_time = time.time() - sources_start
+            
+            # Log des métriques de performance
+            print(f"\n⏱️ MÉTRIQUES DE PERFORMANCE:")
+            print(f"{'='*80}")
+            print(f"🔍 Recherche quantique: {quantum_search_time:.3f}s")
+            print(f"🤖 Génération LLM: {llm_time:.3f}s")
+            print(f"📝 Parsing LLM: {parsing_time:.3f}s")
+            print(f"📊 Calcul score: {score_time:.3f}s")
+            print(f"📚 Récupération sources: {sources_time:.3f}s")
+            print(f"⏱️ Temps total: {time.time() - start_time:.3f}s")
+            print(f"{'='*80}")
             
             # Log détaillé des chunks récupérés (top 10)
             print(f"\n🔍 TOP 10 CHUNKS RÉCUPÉRÉS PAR LE CIRCUIT QUANTIQUE:")
