@@ -52,17 +52,19 @@ def quantum_overlap_similarity(qc1, qc2):
         # Fallback vers une similarité basique
         return 0.5
 
+@time_operation("retrieve_top_k_search")
 def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=None):
     """
     Encode la requête avec embedding sémantique + PCA fixe + amplitude encoding, 
     charge tous les circuits QASM, calcule l'overlap, retourne les top-k chunks.
     """
-    if cassandra_manager is None:
-        print("⚠️ Aucun cassandra_manager fourni, utilisation de l'ancienne méthode")
-        # Fallback vers l'ancienne méthode
-        vec = text_to_vector(query_text, n_qubits)
-        qc_query = angle_encoding(vec)
-    else:
+    with time_operation_context("query_encoding", {"n_qubits": n_qubits, "query_length": len(query_text)}):
+        if cassandra_manager is None:
+            print("⚠️ Aucun cassandra_manager fourni, utilisation de l'ancienne méthode")
+            # Fallback vers l'ancienne méthode
+            vec = text_to_vector(query_text, n_qubits)
+            qc_query = angle_encoding(vec)
+        else:
             # Utiliser l'embedding sémantique + PCA fixe + amplitude encoding
             print("🔄 Génération de l'embedding sémantique pour la requête...")
             with time_operation_context("semantic_embedding_generation"):
