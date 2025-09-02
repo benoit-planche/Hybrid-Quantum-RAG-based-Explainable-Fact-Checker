@@ -136,11 +136,12 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
                     # Utiliser numpy pour la similarité cosinus
                     similarity = np.dot(query_vector, doc_vector) / (np.linalg.norm(query_vector) * np.linalg.norm(doc_vector))
                     
-                    raw_chunk_id = row.metadata_s.get('chunk_id', row.row_id)
+                    # Utiliser row_id directement car metadata_s est None
+                    raw_chunk_id = row.row_id
                     
-                    # Nettoyer le chunk_id : '0.0' → '0', '1.0' → '1', etc.
-                    if isinstance(raw_chunk_id, str) and '.' in raw_chunk_id:
-                        chunk_id = raw_chunk_id.split('.')[0]
+                    # Extraire le numéro du chunk depuis row_id (ex: 'doc_0' → '0')
+                    if raw_chunk_id.startswith('doc_'):
+                        chunk_id = raw_chunk_id.replace('doc_', '')
                     else:
                         chunk_id = str(raw_chunk_id)
                     
@@ -149,7 +150,7 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
                         'id': row.row_id,
                         'chunk_id': chunk_id,
                         'content': row.body_blob,
-                        'source': row.metadata_s.get('source', 'unknown')
+                        'source': 'unknown'  # metadata_s est None
                     }))
                     
                     # Afficher le progrès tous les 1000 chunks
