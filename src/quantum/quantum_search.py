@@ -5,6 +5,10 @@ from qiskit import transpile
 from quantum_encoder import text_to_vector, angle_encoding, amplitude_encoding
 from quantum_db import list_qasm_files, load_qasm_circuit
 from performance_metrics import time_operation, time_operation_context, log_quantum_operation
+import logging
+import time
+
+logger = logging.getLogger(__name__)
 
 @time_operation("quantum_overlap_calculation")
 def quantum_overlap_similarity(qc1, qc2):
@@ -92,28 +96,86 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
     
     # Pré-filtrer les candidats via Cassandra pour limiter le nombre de QASM comparés
     if cassandra_manager is not None:
-        with time_operation_context("prefilter_candidates"):
-            try:
-                base_results = cassandra_manager.search_documents_simple(query_text, n_results=300)
-                candidate_files = []
-                for res in base_results:
-                    chunk_id = res.get('metadata', {}).get('chunk_id') or res.get('id') or res.get('chunk_id')
-                    if not chunk_id:
-                        continue
-                    # Construire le nom du fichier QASM attendu
+        # Étape 1: Pré-filtrage classique pour limiter les comparaisons quantiques
+        logger.info("🔍 Début du pré-filtrage classique...")
+        start_time = time.time()
+        
+        try:
+            # Récupérer les 100 meilleurs candidats via recherche simple
+            # (la colonne embedding n'existe pas dans Cassandra)
+            print(f"🔍 Recherche simple Cassandra pour la requête: '{query_text[:50]}...'")
+            
+            # Requête simple qui fonctionne
+            query_cql = "SELECT row_id, metadata_s, body_blob FROM fact_checker_keyspace.fact_checker_docs LIMIT 100"
+            rows = cassandra_manager.session.execute(query_cql)
+            
+            base_results = []
+            for row in rows:
+                raw_chunk_id = row.metadata_s.get('chunk_id', row.row_id)
+                
+                # Nettoyer le chunk_id : '0.0' → '0', '1.0' → '1', etc.
+                if isinstance(raw_chunk_id, str) and '.' in raw_chunk_id:
+                    # Retirer la partie décimale
+                    chunk_id = raw_chunk_id.split('.')[0]
+                else:
+                    chunk_id = str(raw_chunk_id)
+                
+                base_results.append({
+                    'metadata': {'chunk_id': chunk_id},
+                    'id': row.row_id,
+                    'chunk_id': chunk_id,
+                    'content': row.body_blob,
+                    'source': row.metadata_s.get('source', 'unknown')
+                })
+            
+            print(f"📊 {len(base_results)} documents récupérés directement depuis Cassandra")
+            
+            # Construire la liste des fichiers QASM candidats
+            candidate_files = []
+            print(f"🔍 Construction des candidats QASM...")
+            print(f"📁 Dossier QASM: {db_folder}")
+            
+            for i, res in enumerate(base_results):  # Traiter TOUS les candidats
+                chunk_id = res.get('metadata', {}).get('chunk_id') or res.get('id') or res.get('chunk_id')
+                print(f"   📝 Résultat {i+1}: chunk_id = '{chunk_id}'")
+                
+                if chunk_id:
+                    # Adapter le nom du fichier QASM selon le format réel
                     if n_qubits == 4:
-                        qasm_name = f"embedding_4qubits_None_{chunk_id}.qasm"
+                        # Format: 0 → embedding_4qubits_None_doc_0.qasm
+                        qasm_name = f"embedding_4qubits_None_doc_{chunk_id}.qasm"
                     else:
+                        # Format pour 8 qubits ou autres
                         qasm_name = f"{chunk_id}.qasm"
+                    
                     qasm_path = os.path.join(db_folder, qasm_name)
                     if os.path.exists(qasm_path):
                         candidate_files.append(qasm_path)
-                qasm_files = candidate_files if len(candidate_files) > 0 else list_qasm_files(db_folder)
-            except Exception:
+                        print(f"      ✅ AJOUTÉ")
+                    else:
+                        print(f"      ❌ NON TROUVÉ")
+                else:
+                    print(f"      ⚠️ Pas de chunk_id")
+            
+            print(f"\n🔍 {len(candidate_files)} fichiers QASM candidats trouvés")
+            
+            # Utiliser les candidats si on en a trouvé
+            if len(candidate_files) > 0:
+                qasm_files = candidate_files
+                logger.info(f"SYSTÈME HYBRIDE ACTIVÉ: {len(qasm_files)} candidats au lieu de tous les fichiers")
+            else:
                 qasm_files = list_qasm_files(db_folder)
+                logger.warning(f"AUCUN CANDIDAT TROUVÉ, fallback sur {len(qasm_files)} fichiers QASM")
+                
+        except Exception as e:
+            logger.error(f"Erreur pré-filtrage: {e}")
+            qasm_files = list_qasm_files(db_folder)
+            logger.warning(f"Fallback sur {len(qasm_files)} fichiers QASM")
     else:
+        logger.warning("Pas de cassandra_manager, utilisation de tous les fichiers QASM")
         qasm_files = list_qasm_files(db_folder)
     
+    logger.info(f"Début comparaison quantique sur {len(qasm_files)} fichiers")
     with time_operation_context("quantum_similarity_computation", {"n_files": len(qasm_files)}):
         scores = []
         for i, qasm_path in enumerate(qasm_files):

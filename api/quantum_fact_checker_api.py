@@ -8,10 +8,23 @@ import os
 import sys
 import time
 import json
+import logging
 import numpy as np
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 from pydantic import BaseModel, Field
+
+# Configuration des logs vers un fichier
+log_file = "api_quantum_fact_checker.log"
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file, mode='w'),
+        logging.StreamHandler()  # Garder aussi la console
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Ajouter les chemins nécessaires
 sys.path.append('../system')
