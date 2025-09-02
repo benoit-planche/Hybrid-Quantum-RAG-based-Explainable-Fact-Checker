@@ -26,9 +26,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Ajouter les chemins nécessaires
-sys.path.append('../system')
-sys.path.append('../src/quantum')
+# Ajouter le dossier system au PYTHONPATH
+current_dir = os.path.dirname(os.path.abspath(__file__))
+system_dir = os.path.join(os.path.dirname(current_dir), 'system')
+quantum_dir = os.path.join(os.path.dirname(current_dir), 'src', 'quantum')
+sys.path.insert(0, system_dir)
+sys.path.insert(0, quantum_dir)
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
