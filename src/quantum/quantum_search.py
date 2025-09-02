@@ -96,39 +96,75 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
     
     # Pré-filtrer les candidats via Cassandra pour limiter le nombre de QASM comparés
     if cassandra_manager is not None:
-        # Étape 1: Pré-filtrage classique pour limiter les comparaisons quantiques
-        logger.info("🔍 Début du pré-filtrage classique...")
-        start_time = time.time()
-        
         try:
-            # Récupérer les 100 meilleurs candidats via recherche simple
-            # (la colonne embedding n'existe pas dans Cassandra)
-            print(f"🔍 Recherche simple Cassandra pour la requête: '{query_text[:50]}...'")
+            # Récupérer les 100 meilleurs candidats via recherche vectorielle sur les embeddings
+            print(f"🔍 Recherche vectorielle sur les embeddings pour la requête: '{query_text[:50]}...'")
             
-            # Requête simple qui fonctionne
-            query_cql = "SELECT row_id, metadata_s, body_blob FROM fact_checker_keyspace.fact_checker_docs LIMIT 100"
+            # Étape 1: Calculer l'embedding de la requête
+            from ollama import Client
+            client = Client(host='http://localhost:11434')
+            
+            # Générer l'embedding de la requête
+            query_embedding = client.embeddings(model='llama2:7b', prompt=query_text)
+            query_vector = query_embedding['embedding']
+            
+            print(f"📊 Embedding de la requête calculé: {len(query_vector)} dimensions")
+            
+            # Étape 2: Récupérer TOUS les embeddings stockés et calculer les similarités
+            query_cql = "SELECT row_id, metadata_s, body_blob, vector FROM fact_checker_keyspace.fact_checker_docs"
             rows = cassandra_manager.session.execute(query_cql)
             
-            base_results = []
-            for row in rows:
-                raw_chunk_id = row.metadata_s.get('chunk_id', row.row_id)
-                
-                # Nettoyer le chunk_id : '0.0' → '0', '1.0' → '1', etc.
-                if isinstance(raw_chunk_id, str) and '.' in raw_chunk_id:
-                    # Retirer la partie décimale
-                    chunk_id = raw_chunk_id.split('.')[0]
-                else:
-                    chunk_id = str(raw_chunk_id)
-                
-                base_results.append({
-                    'metadata': {'chunk_id': chunk_id},
-                    'id': row.row_id,
-                    'chunk_id': chunk_id,
-                    'content': row.body_blob,
-                    'source': row.metadata_s.get('source', 'unknown')
-                })
+            # Calculer les similarités et trier
+            similarities = []
+            total_chunks = 0
+            processed_chunks = 0
             
-            print(f"📊 {len(base_results)} documents récupérés directement depuis Cassandra")
+            print(f"🧮 Calcul des similarités cosinus sur tous les chunks...")
+            for row in rows:
+                total_chunks += 1
+                if hasattr(row, 'vector') and row.vector:
+                    processed_chunks += 1
+                    # Calculer la similarité cosinus
+                    doc_vector = row.vector
+                    # Utiliser numpy pour la similarité cosinus
+                    similarity = np.dot(query_vector, doc_vector) / (np.linalg.norm(query_vector) * np.linalg.norm(doc_vector))
+                    
+                    raw_chunk_id = row.metadata_s.get('chunk_id', row.row_id)
+                    
+                    # Nettoyer le chunk_id : '0.0' → '0', '1.0' → '1', etc.
+                    if isinstance(raw_chunk_id, str) and '.' in raw_chunk_id:
+                        chunk_id = raw_chunk_id.split('.')[0]
+                    else:
+                        chunk_id = str(raw_chunk_id)
+                    
+                    similarities.append((similarity, {
+                        'metadata': {'chunk_id': chunk_id},
+                        'id': row.row_id,
+                        'chunk_id': chunk_id,
+                        'content': row.body_blob,
+                        'source': row.metadata_s.get('source', 'unknown')
+                    }))
+                    
+                    # Afficher le progrès tous les 1000 chunks
+                    if processed_chunks % 1000 == 0:
+                        print(f"   📊 {processed_chunks} chunks traités...")
+            
+            print(f"📊 Total chunks dans la base: {total_chunks}")
+            print(f"📊 Chunks avec embeddings: {processed_chunks}")
+            print(f"📊 Chunks traités pour similarité: {len(similarities)}")
+            
+            # Trier par similarité décroissante et prendre les 100 meilleurs
+            similarities.sort(reverse=True, key=lambda x: x[0])
+            base_results = [item[1] for item in similarities[:100]]
+            
+            print(f"🔍 Recherche vectorielle terminée: {len(base_results)} meilleurs candidats trouvés")
+            if base_results:
+                print(f"📊 Similarité max: {similarities[0][0]:.4f}, min: {similarities[-1][0]:.4f}")
+                print(f"🔍 Top 5 documents par similarité vectorielle:")
+                for i, (score, doc) in enumerate(similarities[:5]):
+                    chunk_id = doc['chunk_id']
+                    source = doc['source']
+                    print(f"   {i+1}. Chunk {chunk_id} (Similarité: {score:.4f}) - {source}")
             
             # Construire la liste des fichiers QASM candidats
             candidate_files = []
