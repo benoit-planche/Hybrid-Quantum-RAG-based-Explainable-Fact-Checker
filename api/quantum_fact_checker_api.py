@@ -107,11 +107,6 @@ class QuantumFactCheckerAPI:
         self.analysis_prompt_template = """
 You are a RIGOROUS and DECISIVE fact-checker. Your job is to verify the following claim using ONLY the provided evidence. 
 You MUST take a clear position and be willing to CONTRADICT the claim if the evidence doesn't support it.
-- Be EXTRA CRITICAL of claims that seem too good to be true
-- If a claim sounds like climate denial talking points, be especially skeptical
-- Look for evidence that DIRECTLY contradicts the claim
-- Remember: absence of evidence is not evidence of absence
-
 
 CLAIM: {claim}
 
