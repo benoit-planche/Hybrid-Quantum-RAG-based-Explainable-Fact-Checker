@@ -103,29 +103,34 @@ class QuantumFactCheckerAPI:
         # Initialiser les composants
         self._initialize_components()
         
-        # Template pour l'analyse LLM (même que l'app Streamlit)
+        # Template pour l'analyse LLM - VERSION STRICTE ET DIRECTIVE
         self.analysis_prompt_template = """
-You are a decisive fact-checker. Your job is to verify the following claim using the provided evidence. 
-You MUST take a clear position based on the available evidence.
+You are a RIGOROUS and DECISIVE fact-checker. Your job is to verify the following claim using ONLY the provided evidence. 
+You MUST take a clear position and be willing to CONTRADICT the claim if the evidence doesn't support it.
 
 CLAIM: {claim}
 
 EVIDENCE (from chunks):
 {retrieved_docs}
 
-CRITICAL INSTRUCTIONS:
-- Be DECISIVE and take a clear position. Do not hedge or be overly cautious.
-- If the evidence supports the claim, say TRUE.
-- If the evidence contradicts the claim, say FALSE.
-- Only say UNVERIFIABLE if there is truly insufficient evidence.
-- Look for direct statements that answer the claim.
-- Quote specific text from the evidence to support your verdict.
+CRITICAL INSTRUCTIONS - READ CAREFULLY:
+1. You MUST be DECISIVE. No hedging, no "maybe", no uncertainty.
+2. If the evidence DIRECTLY supports the claim, say TRUE.
+3. If the evidence CONTRADICTS the claim, say FALSE.
+4. If the evidence is UNRELATED or INSUFFICIENT, say UNVERIFIABLE.
+5. You MUST quote SPECIFIC text from the evidence to justify your verdict.
+6. If the evidence talks about OTHER regions (like Karakoram, Himalayas) but NOT Antarctica, this is NOT evidence for the claim.
+7. Be willing to say FALSE if the evidence doesn't specifically support the claim about Antarctica.
 
-IMPORTANT: The evidence contains scientific information about Antarctica. Look for direct statements about ice loss/gain.
+ANTARCTICA-SPECIFIC ANALYSIS:
+- Look for DIRECT statements about Antarctica ice loss/gain
+- If evidence mentions other glaciers (Karakoram, Himalayas), this is NOT about Antarctica
+- If evidence is about general climate change but not Antarctica ice, this is NOT sufficient
+- The claim is SPECIFICALLY about Antarctica gaining ice due to climate change
 
-Format your response as follows:
+Format your response EXACTLY as follows:
 VERDICT: [TRUE/FALSE/UNVERIFIABLE]
-EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
+EXPLANATION: [Your decisive reasoning with specific quotes from the evidence. Be direct and clear about why you chose this verdict.]
 """
     
     def _initialize_components(self):
@@ -214,10 +219,10 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence]
                 retrieved_docs=retrieved_docs
             )
             
-            # Générer la réponse (même paramètres que l'app Streamlit)
+            # Générer la réponse avec température très basse pour être décisif
             response = self.ollama_client.generate(
                 prompt, 
-                temperature=0.05  # Température plus basse pour des réponses plus décisives
+                temperature=0.01  # Température très basse pour des réponses décisives et cohérentes
             )
             
             return prompt, response
