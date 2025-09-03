@@ -112,6 +112,7 @@ You MUST take a clear position and be willing to CONTRADICT the claim if the evi
 - Look for evidence that DIRECTLY contradicts the claim
 - Remember: absence of evidence is not evidence of absence
 
+
 CLAIM: {claim}
 
 EVIDENCE (from chunks):
