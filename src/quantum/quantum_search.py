@@ -53,7 +53,7 @@ def quantum_overlap_similarity(qc1, qc2):
         return 0.5
 
 @time_operation("retrieve_top_k_search")
-def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=None):
+def retrieve_top_k(query_text, db_folder, k=5, n_qubits=8, cassandra_manager=None):
     """
     Encode la requête avec embedding sémantique + PCA fixe + amplitude encoding, 
     charge tous les circuits QASM, calcule l'overlap, retourne les top-k chunks.
@@ -190,8 +190,11 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
                     if n_qubits == 4:
                         # Format: 0 → embedding_4qubits_None_doc_0.qasm
                         qasm_name = f"embedding_4qubits_None_doc_{chunk_id}.qasm"
+                    elif n_qubits == 8:
+                        # Format: 0 → None_doc_0_8qubits.qasm
+                        qasm_name = f"None_doc_{chunk_id}_8qubits.qasm"
                     else:
-                        # Format pour 8 qubits ou autres
+                        # Format pour autres qubits
                         qasm_name = f"{chunk_id}.qasm"
                     
                     qasm_path = os.path.join(db_folder, qasm_name)
@@ -236,6 +239,9 @@ def retrieve_top_k(query_text, db_folder, k=5, n_qubits=16, cassandra_manager=No
                 # Pour les QASM 4 qubits: 'embedding_4qubits_None_doc_XXXX' → 'doc_XXXX'
                 if filename.startswith('embedding_4qubits_'):
                     filename = filename.replace('embedding_4qubits_', '')
+                # Pour les QASM 8 qubits: 'None_doc_XXXX_8qubits' → 'XXXX'
+                if filename.startswith('None_doc_') and filename.endswith('_8qubits'):
+                    filename = filename.replace('None_doc_', '').replace('_8qubits', '')
                 # Retirer le préfixe 'None_' si présent
                 if filename.startswith('None_'):
                     filename = filename.replace('None_', '')

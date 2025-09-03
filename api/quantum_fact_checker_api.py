@@ -96,8 +96,8 @@ class QuantumFactCheckerAPI:
     
     def __init__(self):
         """Initialiser l'API"""
-        self.db_folder = "../src/quantum/qasm_circuits_4qubits/"
-        self.n_qubits = 4
+        self.db_folder = "../src/quantum/quantum_db_8qubits/"
+        self.n_qubits = 8
         self.k_results = 10
         
         # Initialiser les composants
