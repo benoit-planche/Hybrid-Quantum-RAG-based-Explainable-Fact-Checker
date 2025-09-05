@@ -39,7 +39,7 @@ from fastapi.responses import JSONResponse
 import uvicorn
 
 # Imports du système quantique
-from grover_fixed import fixed_grover_retrieve_top_k
+from grover_hybrid import hybrid_grover_retrieve_top_k
 from cassandra_manager import create_cassandra_manager
 from ollama_utils import OllamaClient, format_prompt
 from performance_metrics import (
@@ -346,7 +346,7 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence. Be
             # Recherche quantique
             quantum_search_start = time.time()
             with time_operation_context("quantum_search"):
-                results = fixed_grover_retrieve_top_k(
+                results = hybrid_grover_retrieve_top_k(
                     request.message,
                     self.db_folder,
                     k=self.k_results,
@@ -594,7 +594,7 @@ async def test_grover():
         test_query = "Antarctica is gaining ice due to climate change"
         
         start_time = time.time()
-        results = fixed_grover_retrieve_top_k(
+        results = hybrid_grover_retrieve_top_k(
             test_query, api_instance.db_folder, k=5, 
             n_qubits=api_instance.n_qubits, cassandra_manager=api_instance.cassandra_manager
         )
