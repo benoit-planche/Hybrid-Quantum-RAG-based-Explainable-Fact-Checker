@@ -179,10 +179,10 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence. Be
                 session = cluster.connect()
                 self.cassandra_session = session
             
-            # Le chunk_id est maintenant au format "doc_157" (après nettoyage dans quantum_search.py)
-            # Essayer d'abord avec partition_id = "None"
+            # Le chunk_id est maintenant au format "157" (retourné par Grover)
+            # Il faut ajouter le préfixe "doc_" pour correspondre à la base de données
             partition_id = "None"
-            row_id = chunk_id  # Utiliser "doc_157" comme row_id
+            row_id = f"doc_{chunk_id}"  # Ajouter le préfixe "doc_"
             
             query = "SELECT body_blob, metadata_s FROM fact_checker_keyspace.fact_checker_docs WHERE partition_id=%s AND row_id=%s;"
             row = session.execute(query, (partition_id, row_id)).one()
