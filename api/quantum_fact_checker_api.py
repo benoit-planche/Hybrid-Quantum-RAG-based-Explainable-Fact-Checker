@@ -39,7 +39,7 @@ from fastapi.responses import JSONResponse
 import uvicorn
 
 # Imports du système quantique
-from quantum_search import retrieve_top_k
+from grover_fixed import fixed_grover_retrieve_top_k
 from cassandra_manager import create_cassandra_manager
 from ollama_utils import OllamaClient, format_prompt
 from performance_metrics import (
@@ -98,6 +98,9 @@ class QuantumFactCheckerAPI:
         """Initialiser l'API"""
         self.db_folder = "../src/quantum/quantum_db_8qubits/"
         self.n_qubits = 8
+        
+        # Configuration Grover uniquement
+        self.grover_threshold = 0.4  # Seuil de similarité optimisé
         self.k_results = 10
         
         # Initialiser les composants
@@ -343,7 +346,7 @@ EXPLANATION: [Your decisive reasoning with specific quotes from the evidence. Be
             # Recherche quantique
             quantum_search_start = time.time()
             with time_operation_context("quantum_search"):
-                results = retrieve_top_k(
+                results = fixed_grover_retrieve_top_k(
                     request.message,
                     self.db_folder,
                     k=self.k_results,
@@ -551,6 +554,61 @@ async def get_stats():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la récupération des stats: {str(e)}")
+
+
+
+
+
+# Endpoints Grover simplifiés
+@app.post("/configure-grover")
+async def configure_grover(config: dict):
+    """Configurer le seuil de similarité Grover"""
+    try:
+        if "threshold" in config:
+            api_instance.grover_threshold = config["threshold"]
+        
+        return {"status": "success", "config": {
+            "threshold": api_instance.grover_threshold
+        }}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/grover-stats")
+async def get_grover_stats():
+    """Obtenir les statistiques du système Grover"""
+    try:
+        stats = {
+            "grover_threshold": api_instance.grover_threshold,
+            "config": {
+                "threshold": api_instance.grover_threshold
+            }
+        }
+        return stats
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/grover-test")
+async def test_grover():
+    """Tester le système Grover"""
+    try:
+        test_query = "Antarctica is gaining ice due to climate change"
+        
+        start_time = time.time()
+        results = fixed_grover_retrieve_top_k(
+            test_query, api_instance.db_folder, k=5, 
+            n_qubits=api_instance.n_qubits, cassandra_manager=api_instance.cassandra_manager
+        )
+        duration = time.time() - start_time
+        
+        return {
+            "test_query": test_query,
+            "results_count": len(results),
+            "duration": duration,
+            "threshold": api_instance.grover_threshold,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run(
