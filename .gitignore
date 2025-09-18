@@ -64,8 +64,16 @@ tmp/
 *.json
 data/
 rapport/
+src/quantum/qasm_circuits_4qubits
+src/quantum/src/quantum/quantum_db
+src/quantum/quantum_db
+src/quantum/quantum_db_8qubits
 
 # ChromaDB files
 system/chroma_db/
 *.bin
 *.sqlite3
+
+# Cassandra
+cassandra_dump_docker_20250829_174032
+embeddings_dump_*

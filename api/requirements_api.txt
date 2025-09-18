@@ -1,0 +1,58 @@
+# Core API dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+uvloop==0.21.0
+starlette==0.27.0
+pydantic==2.11.7
+pydantic-core==2.33.2
+
+# HTTP and networking
+requests==2.31.0
+httpx==0.28.1
+aiohttp==3.12.15
+python-multipart==0.0.6
+
+# Quantum computing
+qiskit==2.1.1
+qiskit-aer==0.17.1
+rustworkx==0.17.1
+
+# Data processing and ML
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.7.1
+scipy==1.16.1
+joblib==1.5.1
+
+# Database and vector stores
+cassandra-driver==3.29.2
+cassio==0.1.10
+sqlalchemy==2.0.43
+
+# AI and LLM
+ollama==0.5.3
+llama-index==0.13.2
+llama-index-core==0.13.2
+llama-index-llms-ollama==0.7.1
+llama-index-embeddings-ollama==0.8.1
+llama-index-vector-stores-cassandra==0.4.0
+llama-index-readers-file==0.5.2
+llama-index-readers-llama-parse==0.5.0
+llama-parse==0.6.54
+
+# Document processing
+pypdf==6.0.0
+pypdf2==3.0.1
+beautifulsoup4==4.13.4
+python-dotenv==1.1.1
+
+# Utilities
+tqdm==4.67.1
+regex==2025.7.34
+nltk==3.9.1
+networkx==3.5
+psutil==7.0.0
+
+# Development and monitoring
+watchfiles==1.1.0
+websockets==15.0.1

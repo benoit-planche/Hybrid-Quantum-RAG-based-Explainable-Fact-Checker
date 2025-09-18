@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Évaluation complète du RAG avec ChromaDB et DeepEval
+Évaluation complète du RAG avec Cassandra et DeepEval
 Teste toutes les métriques : Rélevance, Fidélité, Réponse, Contexte
 """
 
@@ -27,7 +27,7 @@ from deepeval.models import OllamaModel
 # Local imports
 import sys
 sys.path.append('../system')
-from chromadb_manager import ChromaDBManager
+from cassandra_manager import create_cassandra_manager
 from ollama_utils import OllamaClient, format_prompt, extract_verdict
 from climate_dataset import CLIMATE_DATASET, get_dataset_by_category, get_random_subset
 
@@ -35,7 +35,7 @@ from climate_dataset import CLIMATE_DATASET, get_dataset_by_category, get_random
 load_dotenv()
 
 class ComprehensiveRAGEvaluator:
-    """Évaluateur complet pour le RAG avec ChromaDB"""
+    """Évaluateur complet pour le RAG avec Cassandra"""
     
     def __init__(self, embedding_model="llama2:7b"):
         """
@@ -48,41 +48,47 @@ class ComprehensiveRAGEvaluator:
         
         # Initialiser les composants
         self.ollama_client = OllamaClient()
-        self.chroma_manager = ChromaDBManager(
-            persist_directory="../system/chroma_db",
-            embedding_model=embedding_model
+        self.cassandra_manager = create_cassandra_manager(
+            table_name="fact_checker_docs"
         )
         
-        # Prompts pour le fact-checking
-        self.fact_checking_prompt = """Tu es un expert en fact-checking sur le changement climatique.
+        # Prompts pour le fact-checking (version améliorée)
+        self.fact_checking_prompt = """You are a decisive fact-checking expert on climate change.
 
-Contexte scientifique:
+Scientific context:
 {context}
 
-Question à vérifier: {question}
+Question to verify:
+{question}
 
-Analyse cette question en te basant UNIQUEMENT sur le contexte fourni.
-Si le contexte ne contient pas d'information pertinente, indique-le clairement.
+CRITICAL VALIDATION: First, assess if the retrieved evidence actually addresses the specific claim made. If the evidence is NOT relevant to the specific claim, you MUST give an UNVERIFIABLE verdict.
 
-IMPORTANT: Limite ta réponse à 500 mots maximum.
+IMPORTANT: You must be decisive and take a clear position. Do not hedge or be overly cautious. If the evidence supports the claim, say so. If it contradicts the claim, say so. If there's insufficient evidence, state that clearly.
 
-Format ta réponse comme suit:
-ANALYSE: [Ton analyse basée sur le contexte]
-VERDICT: [VRAI/FAUX/MIXTE/INCONNU]
-EXPLICATION: [Explication de ton verdict]
-SOURCES: [Références au contexte utilisé]
+IMPORTANT: Limit your answer to a maximum of 500 words.
+
+Format your answer as follows:
+
+ANALYSIS: [Your analysis based on the context]
+VERDICT: [TRUE / MOSTLY TRUE / MOSTLY FALSE / FALSE / UNVERIFIABLE]
+EXPLANATION: [Clear explanation of why you chose this verdict]
+SOURCES: [References to the context used]
 """
     
     async def get_rag_response(self, question: str) -> Dict[str, Any]:
         """
-        Obtenir une réponse RAG complète
+        Obtenir une réponse RAG complète avec Cassandra
         
         Returns:
             Dict avec 'response', 'context', 'sources', 'similarity_scores'
         """
         try:
-            # 1. Rechercher dans ChromaDB
-            search_results = self.chroma_manager.search_documents(question, n_results=5)
+            # 1. Rechercher dans Cassandra avec MMR
+            search_results = self.cassandra_manager.search_documents_mmr(
+                question, 
+                n_results=5, 
+                lambda_param=0.7  # Plus de pertinence, moins de diversité
+            )
             
             # 2. Extraire le contexte et les métadonnées
             context_parts = []
@@ -93,9 +99,9 @@ SOURCES: [Références au contexte utilisé]
                 context_parts.append(doc['content'])
                 sources.append({
                     'source': doc['metadata'].get('source', 'Unknown'),
-                    'similarity': doc['similarity']
+                    'similarity': doc.get('similarity', 0.0)
                 })
-                similarity_scores.append(doc['similarity'])
+                similarity_scores.append(doc.get('similarity', 0.0))
             
             context = "\n\n".join(context_parts)
             
@@ -156,8 +162,9 @@ SOURCES: [Références au contexte utilisé]
         if test_cases is None:
             test_cases = get_random_subset(max_questions)
         
-        print(f"🧪 Évaluation du RAG avec ChromaDB")
+        print(f"🧪 Évaluation du RAG avec Cassandra")
         print(f"🤖 Modèle d'embedding: {self.embedding_model}")
+        print(f"📊 Base de données: Cassandra (5,233 documents)")
         print(f"📋 {len(test_cases)} cas de test")
         print("=" * 60)
         
@@ -194,7 +201,7 @@ SOURCES: [Références au contexte utilisé]
         ollama_model = OllamaModel(
             model="llama2:7b",
             base_url="http://localhost:11434",
-            temperature=0
+            temperature=0.1  # Légèrement plus décisif
         )
         
         # Définir toutes les métriques d'évaluation avec Ollama
@@ -357,22 +364,22 @@ SOURCES: [Références au contexte utilisé]
 async def main():
     """Fonction principale d'évaluation"""
     
-    print("🎯 ÉVALUATION COMPLÈTE DU RAG AVEC CHROMADB")
+    print("🎯 ÉVALUATION COMPLÈTE DU RAG AVEC CASSANDRA")
     print("=" * 60)
     
     # Initialiser l'évaluateur
     evaluator = ComprehensiveRAGEvaluator(embedding_model="llama2:7b")
     
-    # Vérifier que ChromaDB contient des documents
-    collection_info = evaluator.chroma_manager.get_collection_info()
-    if collection_info.get('document_count', 0) == 0:
-        print("❌ Aucun document dans ChromaDB. Veuillez d'abord indexer vos documents.")
+    # Vérifier que Cassandra contient des documents
+    collection_info = evaluator.cassandra_manager.get_collection_info()
+    if not collection_info.get('index_loaded', False):
+        print("❌ Aucun document dans Cassandra. Veuillez d'abord indexer vos documents.")
         return
     
-    print(f"✅ ChromaDB contient {collection_info['document_count']} documents")
+    print(f"✅ Cassandra contient des documents (base vectorielle prête)")
     
     # Évaluer avec différentes tailles de dataset
-    test_sizes = [10, 25, 50]  # Commencer petit pour tester
+    test_sizes = [10]  # Commencer petit pour tester
     
     for size in test_sizes:
         print(f"\n🧪 Test avec {size} questions...")
@@ -388,7 +395,7 @@ async def main():
         
         # Sauvegarder
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"rag_eval_{size}q_{timestamp}.json"
+        filename = f"rag_eval_cassandra_{size}q_{timestamp}.json"
         evaluator.save_results(results, filename)
         
         print(f"\n✅ Évaluation avec {size} questions terminée!")
