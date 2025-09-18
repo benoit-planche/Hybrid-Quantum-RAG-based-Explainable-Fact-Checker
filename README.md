@@ -2,7 +2,6 @@
 
 Auteur :Benoit PLANCHE, benoit.planche@etu.umontpellier.fr
 Posted Date :September 18th, 2025
-Github : https://github.com/benoit-planche/RAG-based-Explainable-Fact-Checker/tree/quantum
 
 ## Abstract
 
