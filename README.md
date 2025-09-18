@@ -88,7 +88,7 @@ Le processus d’ingestion des documents climatiques commence par une phase de p
 ```python
 def ingest_document(document_path:str):
 """Processus d'ingestion d'un document climatique"""
-# 1. Extraction du t e x t e
+# 1. Extraction du texte
 text_content = extract_text_from_pdf(document_path)
 # 2. Decoupage en chunks
 chunks = create_text_chunks(text_content , max_tokens=512)
