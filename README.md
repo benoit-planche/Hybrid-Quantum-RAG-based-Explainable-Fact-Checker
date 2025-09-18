@@ -1,7 +1,7 @@
 # Hybrid Quantum-Classical RAG for Climate Misinformation Detection
 
-Auteur :Benoit PLANCHE, benoit.planche@etu.umontpellier.fr
-Posted Date :September 18th, 2025
+Author: Benoit PLANCHE, <benoit.planche@etu.umontpellier.fr>  
+Posted Date: September 18th, 2025
 
 ## Abstract
 
@@ -9,63 +9,63 @@ This report describes the conceptualization and implementation of an innovative 
 
 ## Introduction
 
-### Problématique
+### Problem Statement
 
-Aujourd’hui, la désinformation climatique est un problème majeur qui affecte la société. Elle peut entraîner des dommages importants sur la santé, l’économie et l’environnement. La désinformation climatique peut également conduire à des décisions politiques erronées et à des conflits sociaux. La lutte contre la désinformation climatique est donc une priorité majeure pour la société. C’est pourquoi il est crucial de développer des outils automatisés de vérification des faits pour protéger l’intégrité de l’information scientifique autour des questions climatiques.
+Today, climate misinformation is a major problem that affects society. It can lead to significant damage to health, the economy, and the environment. Climate misinformation can also lead to erroneous political decisions and social conflicts. The fight against climate misinformation is therefore a major priority for society. This is why it is crucial to develop automated fact-checking tools to protect the integrity of scientific information around climate issues.
 
-### Présentation du projet
+### Project Presentation
 
-Cette article s’inscrit dans le cadre du projet de recherche "Edge-LLM-basedshieldagainst misinformation" développé à l’Université du Danemark du Sud. L’objectif principal est de créer un système automatisé de détection et de vérification de la désinformation climatique en temps réel. Le projet combine plusieurs technologies de pointe : l’intelligence artificielle avec les modèles de langage de grande taille (LLMs), les technologies quantiques pour l’optimisation de la recherche d’information, et l’architecture RAG (Retrieval-Augmented Generation) pour assurer la traçabilité des sources. Cette approche multidisciplinaire vise à développer un outil robuste capable de lutter efficacement contre la propagation de fausses informations sur les questions climatiques.
+This article is part of the research project "Edge-LLM-based shield against misinformation" developed at the University of Southern Denmark. The main objective is to create an automated system for detecting and verifying climate misinformation in real-time. The project combines several cutting-edge technologies: artificial intelligence with Large Language Models (LLMs), quantum technologies for information retrieval optimization, and RAG (Retrieval-Augmented Generation) architecture to ensure source traceability. This multidisciplinary approach aims to develop a robust tool capable of effectively combating the spread of false information on climate issues.
 
-### Objectif de l’article
+### Article Objective
 
-Ce document présente la mission réalisée, les défis techniques relevés, et les résultats obtenus dans le cadre de ce projet de recherche.
+This document presents the mission carried out, the technical challenges overcome, and the results obtained as part of this research project.
 
-## Contexte
+## Context
 
-### Le projet de recherche : "Edge-LLM-based shield against misinformation"
+### Research Project: "Edge-LLM-based shield against misinformation"
 
-Le projet s’inscrit dans le cadre plus large de la lutte contre la désinformation, avec un focus spécifique sur les informations climatiques. L’objectif principal était de développer un système hybride combinant à la fois des approches de recherche quantique et classique pour l’analyse de documents, dans le but d’obtenir une précision maximale tout en minimisant le temps de traitement.
+The project is part of the broader fight against misinformation, with a specific focus on climate information. The main objective was to develop a hybrid system combining both quantum and classical search approaches for document analysis, with the aim of obtaining maximum accuracy while minimizing processing time.
 
-Le système automatisé développé est capable de :
+The automated system developed is capable of:
 
-- Analyser et vérifier les affirmations liées au changement climatique
-- Fournir des explications transparentes et vérifiables
-- Fonctionner en temps réel dans des applications
+- Analyzing and verifying claims related to climate change
+- Providing transparent and verifiable explanations
+- Operating in real-time in applications
 
-### Justification technologique et objectifs techniques
+### Technological Justification and Technical Objectives
 
-L’utilisation des LLMs (Large Language Models) se justifie par leur capacité à comprendre le contexte et la nuance dans les textes, ce qui est essentiel pour la détection de désinformation sophistiquée. Pour l’intégration de ces modèles, nous avons choisi Ollama, une plateforme open-source qui permet d’exécuter localement des modèles de langage de grande taille. Ollama offre plusieurs avantages : déploiement simplifié, gestion automatique des modèles. Cette solution permet d’éviter les coûts et les limitations des APIs cloud tout en garantissant la confidentialité des données.
+The use of LLMs (Large Language Models) is justified by their ability to understand context and nuance in texts, which is essential for detecting sophisticated misinformation. For the integration of these models, we chose Ollama, an open-source platform that allows running large language models locally. Ollama offers several advantages: simplified deployment, automatic model management. This solution avoids the costs and limitations of cloud APIs while ensuring data privacy.
 
-Cependant, pour garantir la traçabilité et la vérifiabilité des réponses générées, il est nécessaire d’aller au-delà de la simple génération de texte. C’est dans ce contexte que l’architecture RAG (Retrieval-Augmented Generation) prend tout son sens : elle combine la puissance des LLMs avec un module de recherche documentaire, permettant au système de s’appuyer sur des sources fiables et de citer explicitement les documents utilisés lors de la vérification d’une affirmation. Ainsi, le RAG permet d’améliorer la transparence et la robustesse du système face à la désinformation.
+However, to guarantee the traceability and verifiability of generated responses, it is necessary to go beyond simple text generation. This is where the RAG (Retrieval-Augmented Generation) architecture makes perfect sense: it combines the power of LLMs with a document search module, allowing the system to rely on reliable sources and explicitly cite the documents used during claim verification. Thus, RAG improves the transparency and robustness of the system against misinformation.
 
-Par ailleurs, l’approche quantique offre des perspectives d’amélioration des performances de recherche et de similarité, particulièrement dans le traitement de grandes bases de données documentaires. L’intégration de techniques quantiques dans le module de retrieval du RAG permet d’obtenir une capture du contexte plus précise et plus rapide, renforçant ainsi l’efficacité globale du système.
+Furthermore, the quantum approach offers prospects for improving search and similarity performance, particularly in processing large document databases. The integration of quantum techniques in the RAG retrieval module allows for more precise and faster context capture, thus strengthening the overall efficiency of the system.
 
-Les objectifs techniques de cette mission consistaient à :
+The technical objectives of this mission were to:
 
-- Maîtriser les technologies quantiques appliquées à la recherche d’information
-- Intégrer des modèles de langage de grande taille dans un système de production
-- Mettre en œuvre une architecture RAG pour assurer la traçabilité des sources et la robustesse du fact-checking
-- Optimiser les performances de traitement afin de permettre une utilisation en temps réel adapté à la dynamique des réseaux sociaux et des médias sociaux
-- Évaluer les performances globales du système sur un corpus de revendications climatiques
+- Master quantum technologies applied to information retrieval
+- Integrate large language models into a production system
+- Implement a RAG architecture to ensure source traceability and fact-checking robustness
+- Optimize processing performance to enable real-time use adapted to the dynamics of social networks and social media
+- Evaluate the overall performance of the system on a corpus of climate claims
 
-## Rapport Technique
+## Technical Report
 
-### Architecture du système
+### System Architecture
 
-Le système RAG développé repose sur une architecture hybride combinant plusieurs composants.L’ensemble du développement a été réalisé en Python, un choix technologique justifié par la richesse de son écosystème pour l’intelligence artificielle, le traitement quantique et la gestion de bases de données. Python offre des bibliothèques spécialisées comme Qiskit pour la simulation quantique, Ollama pour l’intégration des LLMs, et Cassandra pour la gestion de la base vectorielle, permettant une intégration harmonieuse de tous les composants du système.
+The developed RAG system is based on a hybrid architecture combining several components. The entire development was carried out in Python, a technological choice justified by the richness of its ecosystem for artificial intelligence, quantum processing, and database management. Python offers specialized libraries like Qiskit for quantum simulation, Ollama for LLM integration, and Cassandra for vector database management, enabling harmonious integration of all system components.
 
-![Schéma d’architecture du système RAG](ressource/architecture.png)
+![System RAG Architecture Diagram](ressource/architecture.png)
 
-L’architecture du système RAG (Retrieval-Augmented Generation) s’appui sur plusieurs composants qui interagissent pour permettre la recherche de connaissances pertinentes et la génération de réponses adaptées. Le processus débute avec le prompt de l’utilisateur, qui constitue la requête initiale. Ce prompt est traité par le pipeline RAG, dont le rôle est d’enrichir la requête avec des informations issues de sources externes avant de la transmettre au modèle de langage. La base de connaissances est constituée de documents de référence (par exemple des fichiers PDF), qui sont d’abord découpés en plus petits segments appelés chunks.
+The RAG (Retrieval-Augmented Generation) system architecture relies on several components that interact to enable relevant knowledge search and adapted response generation. The process begins with the user prompt, which constitutes the initial query. This prompt is processed by the RAG pipeline, whose role is to enrich the query with information from external sources before transmitting it to the language model. The knowledge base consists of reference documents (for example PDF files), which are first divided into smaller segments called chunks.
 
-Ces chunks sont ensuite transformés en vecteurs grâce à OllamaEmbedding. Les vecteurs sont stockés dans une base vectorielle (Cassandra), ce qui permet de réaliser une recherche de similarité afin d’identifier rapidement les passages les plus pertinents pour répondre à la question posée. Le contexte ainsi retrouvé est ensuite transmis à un circuit quantique (8 qubits), dont le rôle est d’optimiser ou de reclasser l’information avant de l’envoyer au modèle. Enfin, le LLM (llama 7B) exploite à la fois le prompt initial et le contexte enrichi pour produire la réponse finale qui est renvoyée à l’utilisateur.
+These chunks are then transformed into vectors using OllamaEmbedding. The vectors are stored in a vector database (Cassandra), which allows performing similarity search to quickly identify the most relevant passages to answer the question asked. The context thus found is then transmitted to a quantum circuit (8 qubits), whose role is to optimize or reclassify the information before sending it to the model. Finally, the LLM (llama 7B) exploits both the initial prompt and the enriched context to produce the final response that is returned to the user.
 
-### Base vectorielle Cassandra
+### Cassandra Vector Database
 
-#### Création et configuration de la base de données
+#### Database Creation and Configuration
 
-La base vectorielle Cassandra constitue le cœur du système de retrieval du RAG. Elle stocke les embeddings vectoriels des documents climatiques et permet une recherche rapide et efficace. La configuration de la base de données a été réalisée avec les paramètres suivants :
+The Cassandra vector database constitutes the heart of the RAG retrieval system. It stores vector embeddings of climate documents and enables fast and efficient search. The database configuration was implemented with the following parameters:
 
 ```python
 CREATE KEYSPACE climate_fact_checking
@@ -74,180 +74,177 @@ CREATE TABLE document_embeddings (
 document_id UUID PRIMARY KEY,
 title TEXT,
 content TEXT,
-embedding VECTOR <FLOAT, 4096>, # Embeddings 4096D
+embedding VECTOR <FLOAT, 4096>, # 4096D Embeddings
 metadata MAP <TEXT, TEXT>,
-created_atT I M E S T A M P
+created_at TIMESTAMP
 );
 ```
 
-#### Processus d’ingestion des documents
+#### Document Ingestion Process
 
-Le processus d’ingestion des documents climatiques commence par une phase de prétraitement, au cours de laquelle le texte est extrait et nettoyé à partir des fichiers PDF scientifiques. Une fois cette étape réalisée, les documents sont découpés en segments n’excédant pas 512 tokens, afin d’optimiser la gestion et l’analyse des données textuelles. Pour chaque segment ainsi obtenu, des embeddings vectoriels de dimension 4096 sont générés à l’aide du modèle ‘Ollama Embedding‘ via l’API Ollama. Enfin, ces représentations vectorielles, accompagnées de leurs métadonnées, sont stockées dans la base Cassandra, ce qui permet d’assurer une indexation efficace et une recherche rapide au sein du système.
-
-```python
-def ingest_document(document_path:str):
-"""Processus d'ingestion d'un document climatique"""
-# 1. Extraction du texte
-text_content = extract_text_from_pdf(document_path)
-# 2. Decoupage en chunks
-chunks = create_text_chunks(text_content , max_tokens=512)
-# 3. Generation des embeddings
-embeddings = generate_embeddings(chunks)
-# 4. Stockage dans Cassandra
-forchunk , embeddingin zip(chunks , embeddings ):
-store_in_cassandra(chunk , embedding , metadata)
-```
-
-#### Recherche vectorielle et pré-filtrage
-
-Lors d’une requête utilisateur,le système prend le contenu de la requête et le transforme en embedding vectoriel à l’aide du modèle ‘OllamaEmbedding‘. Ensuite, une recherche vectorielle est effectuée dans la base Cassandra pour trouver les 300 documents les plus similaires à l’embedding de la requête. Ces documents sont ensuite utilisés pour la recherche quantique. Grace à ce pré-filtrage, le système peut limiter le nombre de documents à comparer dans la recherche quantique, ce qui permet d’améliorer les performances du système.
+The climate document ingestion process begins with a preprocessing phase, during which text is extracted and cleaned from scientific PDF files. Once this step is completed, documents are divided into segments not exceeding 512 tokens, to optimize the management and analysis of textual data. For each segment thus obtained, 4096-dimensional vector embeddings are generated using the 'Ollama Embedding' model via the Ollama API. Finally, these vector representations, along with their metadata, are stored in the Cassandra database, ensuring efficient indexing and fast search within the system.
 
 ```python
-def vector_search(query_embedding: np.ndarray , top_k:int= 300):
-"""Recherche vectorielle dans Cassandra"""
-# Requete de similarité cosinus
-query = """
-   SELECT document_id , title , content , embedding , metadata
-   FROM document_embeddings
-   ORDER BY embedding ANN OF %s
-   LIMIT %s
-   """
-results = session . execute(query , [query_embedding , top_k])
-return[(row.document_id , row. title , row. content , row.embedding)
-for row in results ]
+def ingest_document(document_path: str):
+    """Climate document ingestion process"""
+    # 1. Text extraction
+    text_content = extract_text_from_pdf(document_path)
+    # 2. Chunking
+    chunks = create_text_chunks(text_content, max_tokens=512)
+    # 3. Embedding generation
+    embeddings = generate_embeddings(chunks)
+    # 4. Storage in Cassandra
+    for chunk, embedding in zip(chunks, embeddings):
+        store_in_cassandra(chunk, embedding, metadata)
 ```
 
-Cette architecture permet de traiter efficacement une base de plus de 10 000 documents tout en maintenant des temps de réponse acceptables pour l’utilisation en temps réel qu’on ne pourrait pas assumé avec de la simulation quantique uniquement.
+#### Vector Search and Pre-filtering
 
-### Développement du système quantique
-
-Une fois les documents selectionnés, le système quantique est utilisé pour comparer les documents entre eux et trouver les 10 résultats les plus similaires.
-
-#### Préparation des données pour le traitement quantique
-
-Avant d’utiliser le circuit quantique, il est nécessaire d’adapter les embeddings des documents à la représentation quantique. Pour cela, chaque embedding est réduit à une dimension de 8, correspondant au nombre de qubits du circuit. Ensuite, chaque vecteur est normalisé. Cette normalisation est indispensable pour permettre l’encodage des données sous forme d’amplitudes quantiques, conformément aux exigences de l’amplitude encoding.
-
-#### Implémentation et utilisation du circuit quantique
-
-Le cœur du système repose sur un circuit quantique à 8 qubits, qui permet de représenter les embeddings normalisés sous forme d’états quantiques. Pour chaque document et pour la requête de l’utilisateur, un circuit quantique est créé et initialisé à l’aide de la méthode ‘initialize‘, qui encode directement l’embedding dans l’état quantique du circuit.
-
-La comparaison entre documents s’effectue par le calcul du recouvrement quantique (overlap) entre les états préparés,ce qui permet de mesurer la similarité entre deux états quantiques. Plus cette valeur est élevée, plus les documents sont considérés comme similaires. Un circuit de comparaison est alors construit pour préparer successivement les deux états à comparer,puis une mesure spécifique est réalisée, par exemple en évaluant la probabilité de retrouver le système dans un état de référence donné. Cette mesure fournit une estimation quantitative de la similarité entre la requête et chaque document.
-
-Enfin, les 10 documents les plus similaires sont sélectionnés et renvoyés au LLM, accompagnés de toutes les informations nécessaires, afin d’analyser la requête utilisateur et de générer un verdict ainsi qu’une explication adaptée à la réalité scientifique.
-
-### Intégration du LLM
-
-#### Configuration Ollama
-
-L’intégration du modèle Llama2:7B via Ollama a nécessité l’optimisation des paramètres :
+During a user query, the system takes the query content and transforms it into a vector embedding using the 'OllamaEmbedding' model. Then, a vector search is performed in the Cassandra database to find the 300 most similar documents to the query embedding. These documents are then used for quantum search. Thanks to this pre-filtering, the system can limit the number of documents to compare in quantum search, which improves system performance.
 
 ```python
-classQuantumFactChecker:
-def__init__( self ):
-self . ollama_client = OllamaClient(
-model="llama2:7b" ,
-temperature=0.01,
-timeout=300
-)
+def vector_search(query_embedding: np.ndarray, top_k: int = 300):
+    """Vector search in Cassandra"""
+    # Cosine similarity query
+    query = """
+       SELECT document_id, title, content, embedding, metadata
+       FROM document_embeddings
+       ORDER BY embedding ANN OF %s
+       LIMIT %s
+       """
+    results = session.execute(query, [query_embedding, top_k])
+    return [(row.document_id, row.title, row.content, row.embedding)
+            for row in results]
 ```
 
-Le modèle Llama2:7B a été choisi pour sa rapidité et sa précision. Le 7B signifie que le modèle a 7 milliards de paramètres. Ces paramètres définissent la capacité du modèle à comprendre le contexte et la nuance dans les textes. Il existe d’autre modèles (Mistral :7B, CodeLlama:7B,DeepSeek-R1:7B) et avec plus de paramètres (13B,70B,130B). Ici,le modèle Llama2 :7B a été choisi pour sa rapidité et sa précision.
+This architecture allows efficient processing of a database of more than 10,000 documents while maintaining acceptable response times for real-time use that we could not assume with quantum simulation alone.
 
-Aussi, la température a été réduite à 0.01 pour des réponses décisives et cohérentes. La température est un paramètre qui définit la créativité du modèle. Plus la température est élevée, plus le modèle est créatif. Plus la température est basse, plus le modèle est déterministe.
+### Quantum System Development
 
-#### Prompt engineering
+Once the documents are selected, the quantum system is used to compare the documents with each other and find the 10 most similar results.
 
-Le développement d’un prompt efficace a été crucial pour la qualité des résultats. Le prompt est le texte qui est envoyé au modèle pour qu’il génère une réponse. Il est important de bien formater le prompt pour que le modèle puisse comprendre la requête utilisateur et générer une réponse adaptée à la réalité scientifique. Voici le prompt utilisé pour l’analyse du LLM :
+#### Data Preparation for Quantum Processing
+
+Before using the quantum circuit, it is necessary to adapt the document embeddings to the quantum representation. For this, each embedding is reduced to a dimension of 8, corresponding to the number of qubits in the circuit. Then, each vector is normalized. This normalization is essential to enable data encoding in the form of quantum amplitudes, in accordance with the requirements of amplitude encoding.
+
+#### Quantum Circuit Implementation and Use
+
+The heart of the system relies on an 8-qubit quantum circuit, which allows representing normalized embeddings in the form of quantum states. For each document and for the user query, a quantum circuit is created and initialized using the 'initialize' method, which directly encodes the embedding in the quantum state of the circuit.
+
+The comparison between documents is performed by calculating the quantum overlap between the prepared states, which allows measuring the similarity between two quantum states. The higher this value, the more similar the documents are considered. A comparison circuit is then built to successively prepare the two states to be compared, then a specific measurement is performed, for example by evaluating the probability of finding the system in a given reference state. This measurement provides a quantitative estimate of the similarity between the query and each document.
+
+Finally, the 10 most similar documents are selected and returned to the LLM, along with all necessary information, to analyze the user query and generate a verdict as well as an explanation adapted to scientific reality.
+
+### LLM Integration
+
+#### Ollama Configuration
+
+The integration of the Llama2:7B model via Ollama required parameter optimization:
+
+```python
+class QuantumFactChecker:
+    def __init__(self):
+        self.ollama_client = OllamaClient(
+            model="llama2:7b",
+            temperature=0.01,
+            timeout=300
+        )
+```
+
+The Llama2:7B model was chosen for its speed and accuracy. The 7B means the model has 7 billion parameters. These parameters define the model's ability to understand context and nuance in texts. There are other models (Mistral:7B, CodeLlama:7B, DeepSeek-R1:7B) and with more parameters (13B, 70B, 130B). Here, the Llama2:7B model was chosen for its speed and accuracy.
+
+Also, the temperature was reduced to 0.01 for decisive and consistent responses. Temperature is a parameter that defines the model's creativity. The higher the temperature, the more creative the model. The lower the temperature, the more deterministic the model.
+
+#### Prompt Engineering
+
+The development of an effective prompt was crucial for the quality of results. The prompt is the text that is sent to the model so that it generates a response. It is important to format the prompt well so that the model can understand the user query and generate a response adapted to scientific reality. Here is the prompt used for LLM analysis:
 
 ```python
 analysis_prompt = """
-You are a climate science fact−checker . Analyze the following claim ...
+You are a climate science fact-checker. Analyze the following claim ...
 CLAIM: {claim}
 EVIDENCE: {evidence}
 INSTRUCTIONS:
-− Be EXTREMELY CRITICAL and skeptical
-−Look for evidence that DIRECTLY contradicts the claim
-−Quote specific text from the evidence
-−Distinguish between Antarctica and other regions
-− If evidence is insufficient , state FALSE
+- Be EXTREMELY CRITICAL and skeptical
+- Look for evidence that DIRECTLY contradicts the claim
+- Quote specific text from the evidence
+- Distinguish between Antarctica and other regions
+- If evidence is insufficient, state FALSE
 RESPONSE FORMAT:
 VERDICT: [TRUE/FALSE/UNVERIFIABLE]
-EXPLANATION: [ Detailed reasoning ]
+EXPLANATION: [Detailed reasoning]
 """
 ```
 
-### Défi techniques et solutions
+### Technical Challenges and Solutions
 
-Finalement, le développement du système a nécessité de surmonter plusieurs défis techniques majeurs. L’optimisation des performances a été obtenue grâce à l’adoption d’une architecture hybride avec pré-filtrage, divisant par vingt le temps de traitement par requête. Enfin, l’efficacité du fact-checking a été renforcée par l’amélioration du prompt et le réglage fin de la température du LLM, permettant de limiter les biais et d’obtenir des réponses plus critiques et fiables. Ces solutions ont permis d’aboutir à un système performant, stable et pertinent pour la vérification automatisée de faits scientifiques.
+Finally, the development of the system required overcoming several major technical challenges. Performance optimization was achieved through the adoption of a hybrid architecture with pre-filtering, reducing processing time per query by twenty. Finally, fact-checking efficiency was strengthened by improving the prompt and fine-tuning the LLM temperature, allowing to limit biases and obtain more critical and reliable responses. These solutions led to a performant, stable, and relevant system for automated verification of scientific facts.
 
-## Résultats obtenus
+## Results Obtained
 
-### Performances globales
+### Overall Performance
 
-Le système final atteint une accuracy de 76% sur un corpus de 50 revendications climatiques, représentant une amélioration significative par rapport au système de base (22%). Cette amélioration est due à l’utilisation de l’architecture hybride quantique-classique, qui permet de combiner les avantages de chaque approche. La vitesse de traitement est de 27.59 secondes en moyenne, ce qui est acceptable pour une application en temps réel. Ce cout est en grande partie dû à la partie quantique, car pour le moment nous ne pouvons que simuler du quantique et non l’exécuter sur un ordinateur quantique.
+The final system achieves 76% accuracy on a corpus of 50 climate claims, representing a significant improvement over the baseline system (22%). This improvement is due to the use of the hybrid quantum-classical architecture, which allows combining the advantages of each approach. Processing speed is 27.59 seconds on average, which is acceptable for a real-time application. This cost is largely due to the quantum part, as for now we can only simulate quantum and not execute it on a quantum computer.
 
-### Comparaison avec d’autre systèmes
+### Comparison with Other Systems
 
-Aussi il est important pour evaluer le système de comparer avec d’autre systèmes. Voici les résultats de la comparaison avec le LLM Brut et le système Hybride.
+It is also important to evaluate the system by comparing it with other systems. Here are the results of the comparison with the Raw LLM and the Hybrid system.
 
-| Systeme | Accuracy | Temps moyen | Amelioration |
-|---------|----------|-------------|--------------|
-| LLM Brut | 22% | 2-5 secondes | - |
-| Systeme Hybride | 76% | 27.59 secondes | +256.36% |
+| System | Accuracy | Average Time | Improvement |
+|--------|----------|--------------|-------------|
+| Raw LLM | 22% | 2-5 seconds | - |
+| Hybrid System | 76% | 27.59 seconds | +256.36% |
 
-### Exemples de résultats
+### Examples of Results
 
-Voici quelques exemples de résultats obtenus avec le système Hybride.
+Here are some examples of results obtained with the Hybrid system.
 
-#### Exemple 1 : Détection réussie d’une fausse revendication
+#### Example 1: Successful Detection of a False Claim
 
 ```python
 CLAIM: "Antarctica is gaining ice due to climate change"
 VERDICT: FALSE
-EXPLANATION: "The evidence shows that Antarctica is actually losing ice mass. The continent has experienced significant ice loss over recent decades , contradicting the claim of ice gain ."
-sources : ...
+EXPLANATION: "The evidence shows that Antarctica is actually losing ice mass. The continent has experienced significant ice loss over recent decades, contradicting the claim of ice gain."
+sources: ...
 ```
 
-#### Exemple 2 : Validation d’un fait établi
+#### Example 2: Validation of an Established Fact
 
 ```python
-CLAIM: "CO2 levels have increased since the pre−industrial era"
+CLAIM: "CO2 levels have increased since the pre-industrial era"
 VERDICT: TRUE
-EXPLANATION: "Multiple sources confirm that atmospheric CO2 concentrations have risen from approximately 280 ppm to over 400 ppm since 1750.
-sources : ...
+EXPLANATION: "Multiple sources confirm that atmospheric CO2 concentrations have risen from approximately 280 ppm to over 400 ppm since 1750."
+sources: ...
 ```
 
-### Conclusion et perspective d’amélioration
+### Conclusion and Improvement Perspectives
 
-On a donc une architecture RAG hybride qui nous permet d’atteindre une accuracy de 76% avec un model LLM de 7B seulement. Une nette amélioration par rapport au LLM Brut. Aussi, l’interface API permet d’intégrer le système dans des applications externes et faciliter les tests. Le tout avec une vitesse de traitement de 27.59 secondes en moyenne. Raisonnable pour une application en temps réel. Cependant, on peut admettre que la vitesse de traitement et un point central dans des perspectives d’amélioration de notre architecture.
+We therefore have a hybrid RAG architecture that allows us to achieve 76% accuracy with only a 7B LLM model. A clear improvement over the Raw LLM. Also, the API interface allows integrating the system into external applications and facilitating tests. All with an average processing speed of 27.59 seconds. Reasonable for a real-time application. However, we can admit that processing speed is a central point in the improvement perspectives of our architecture.
 
-## Bibliographie
+## Bibliography
 
 ```
-“About the NIPCC – Climate Change Reconsidered.” Climate Change Reconsidered,
-https ://climatechangereconsidered.org/about-the-nipcc/. Accessed 12 Sept. 2025.
-Anouska-Abhisikta.“GitHub-Anouska-Abhisikta/RAG-Based-Explainable-Fact-Checker:
-A Transparent and Auditable Fact-Checking System Powered by Retrieval-Augmented Gene-
-ration (RAG), LangChain, and Large Language Models.” GitHub,
-https ://github.com/Anouska-Abhisikta/RAG-based-Explainable-Fact-Checker. Accessed 12
-Sept. 2025.
-Arif-PhyChem. “GitHub - Arif-PhyChem/QD3SET : The First and the Only Dataset in
-the Field of Quantum Dissipative Dynamics.” GitHub,
-https ://github.com/Arif-PhyChem/QD3SET. Accessed 12 Sept. 2025.
-“ClimateChangeMissionControl-NASAScience.” NASAScience,https://www.facebook.com/NASA, 6 Oct. 2021,
-https ://science.nasa.gov/earth/climate-change/climate-change-mission-control/.
-FujiiLabCollaboration.“GitHub-FujiiLabCollaboration/MNISQ-Quantum-Circuit-Dataset:
-MNISQ Circuit Dataset for Machine Learning and Quantum Machine Learning.” GitHub,
-https://github.com/FujiiLabCollaboration/MNISQ-quantum-circuit-dataset.Accessed12Sept.
-2025.
-“Global Warming Links.” Skeptical Science,
-https ://skepticalscience.com/resources.php. Accessed 12 Sept. 2025.
-“IPCC — Intergovernmental Panel on Climate Change.” IPCC — Intergovernmental Panel
+"About the NIPCC – Climate Change Reconsidered." Climate Change Reconsidered,
+https://climatechangereconsidered.org/about-the-nipcc/. Accessed 12 Sept. 2025.
+Anouska-Abhisikta. "GitHub-Anouska-Abhisikta/RAG-Based-Explainable-Fact-Checker:
+A Transparent and Auditable Fact-Checking System Powered by Retrieval-Augmented Generation (RAG), LangChain, and Large Language Models." GitHub,
+https://github.com/Anouska-Abhisikta/RAG-based-Explainable-Fact-Checker. Accessed 12 Sept. 2025.
+Arif-PhyChem. "GitHub - Arif-PhyChem/QD3SET: The First and the Only Dataset in
+the Field of Quantum Dissipative Dynamics." GitHub,
+https://github.com/Arif-PhyChem/QD3SET. Accessed 12 Sept. 2025.
+"ClimateChangeMissionControl-NASAScience." NASAScience, https://www.facebook.com/NASA, 6 Oct. 2021,
+https://science.nasa.gov/earth/climate-change/climate-change-mission-control/.
+FujiiLabCollaboration. "GitHub-FujiiLabCollaboration/MNISQ-Quantum-Circuit-Dataset:
+MNISQ Circuit Dataset for Machine Learning and Quantum Machine Learning." GitHub,
+https://github.com/FujiiLabCollaboration/MNISQ-quantum-circuit-dataset. Accessed 12 Sept. 2025.
+"Global Warming Links." Skeptical Science,
+https://skepticalscience.com/resources.php. Accessed 12 Sept. 2025.
+"IPCC — Intergovernmental Panel on Climate Change." IPCC — Intergovernmental Panel
 on Climate Change,
-https ://www.ipcc.ch/. Accessed 12 Sept. 2025.
-LSchatzki. “GitHub - LSchatzki/NTangled_Datasets : Entanglement-Based Datasets and
-Generators for Quantum Machine Learning.” GitHub,
-https ://github.com/LSchatzki/NTangled_Datasets. Accessed 12 Sept. 2025.
-sysadmin-info. “GitHub - Sysadmin-Info/N8n-K3s.” GitHub,
-https ://github.com/sysadmin-info/n8n-k3s. Accessed 12 Sept. 2025.
+https://www.ipcc.ch/. Accessed 12 Sept. 2025.
+LSchatzki. "GitHub - LSchatzki/NTangled_Datasets: Entanglement-Based Datasets and
+Generators for Quantum Machine Learning." GitHub,
+https://github.com/LSchatzki/NTangled_Datasets. Accessed 12 Sept. 2025.
+sysadmin-info. "GitHub - Sysadmin-Info/N8n-K3s." GitHub,
+https://github.com/sysadmin-info/n8n-k3s. Accessed 12 Sept. 2025.
 ```
